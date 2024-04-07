@@ -84,10 +84,10 @@ const HomePage = () => {
       <div className={s.body}>
         <div className={s.blogs}>
           {Object.entries(groupForumsByDate(forums)).map(
-            ([date, forumsForDate]) => (
+            ([date, forumsForDate]:[any,any]) => (
               <div key={date}>
                 <p className={s.date}>{date}</p>
-                {forumsForDate.map((forum) => (
+                {forumsForDate.map((forum:any) => (
                   <div key={forum._id} className={s.blog}>
                     <p>
                       {forum.title.length > 40
