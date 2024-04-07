@@ -1,22 +1,26 @@
 import express from "express";
+import dayjs from "dayjs";
 import { FightModal, FightRequestModal, createFight, createFightRequest } from "../db/fight";
 
 export const registerFight = async (req: express.Request, res: express.Response) => {
-    const { challenger, challenged, time, location } = req.body;
-    if (!challenger || !challenged || !time || !location) {
+    const { challenger, challenged, date, location } = req.body;
+    if (!challenger || !challenged || !date || !location) {
         return res.status(400).send({ message: "Missing required fields" });
     }
-    const currentDate = new Date();
-    const currentTime = currentDate.getTime();
-    const minimumTime = new Date(currentTime + 24 * 60 * 60 * 1000);
-    const selectedTime = new Date(time);
-    if (selectedTime <= minimumTime) {
+
+    const selectedTime = dayjs(date).format('YYYY-MM-DD HH:mm');
+
+    const currentDate = dayjs();
+    const minimumTime = currentDate.add(1, 'day');
+
+    if (dayjs(selectedTime).isBefore(minimumTime)) {
         return res.status(400).send({ message: "Selected time must be at least 1 day after the current time" });
     }
- await createFightRequest({
+
+    await createFightRequest({
         challenger,
         challenged,
-        time: selectedTime,
+        date: selectedTime,
         location,
     });
 
@@ -54,5 +58,23 @@ export const acceptFight = async (req: express.Request, res: express.Response) =
 export const getFights = async (req: express.Request, res: express.Response) => {
     const fights = await FightModal.find();
     res.status(200).send({ fights }).end();
-
 }
+
+export const mockFIghts = async () => {
+const mockData = [{
+    challenger:"HarshVardhanSaroha",
+    challenged:"SaranshBibiyan",
+    date:"2024-05-01T00:00:00.000Z",
+    location:"Leisure Valley, Delhi Road Sonipat, Haryana",
+},{
+    challenger:"YashDahiya",
+    challenged:"ViditRaheja",
+    date:"2024-05-08T00:00:00.000Z",
+    location:"Haryana Sports Ground, Sonipat, Haryana",
+}];
+
+for (const data of mockData) {
+  await FightModal.create(data);
+}
+
+console.log('Mock data inserted successfully.');}

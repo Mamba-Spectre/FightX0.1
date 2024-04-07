@@ -1,7 +1,6 @@
 // Modal.tsx
 import React, { ReactNode } from 'react';
 import ReactModal from 'react-modal';
-import './Modal.css';
 import s from "./Modal.module.scss";
 
 interface ModalProps {

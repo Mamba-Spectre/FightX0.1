@@ -1,35 +1,124 @@
 "use client"
 import React, { useState } from "react";
 import Modal from "../Modal";
-import { UploadButton } from "../../utils/uploadthing"
+import s from "./Home.module.scss";
+import { UploadButton } from "../../utils/uploadthing";
+import axios from "axios";
+import 'react-select-search/style.css'
+import SelectSearch, { SelectSearchOption } from "react-select-search";
 
 const FightRequestModal = () => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [options, setOptions] = useState<SelectSearchOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [challengedUser, setChallengedUser] = useState(null);
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
 
-    const openModal = () => {
-      setIsOpen(true);
-    };
-  
-    const closeModal = () => {
+  const getOptions = async (query: string) => {
+    try {
+      if (query.length < 3) return [];
+      setLoading(true);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+        params: {
+          username: query,
+        },
+      });
+      const newOptions = response?.data?.usernames?.map((user: object) => ({
+        name: user,
+        value: user,
+      }));
+      setOptions(newOptions);
+      setLoading(false);
+      return newOptions;
+    } catch (error) {
+      console.error("Error fetching options:", error);
+      setLoading(false);
+      return [];
+    }
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = async () => {
+    try{
+      const payload = {
+        challenger : "testuser1",
+        challenged: challengedUser,
+        location,
+        date,
+      };
+      console.log("Payload: ", payload)
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/fights/registerFight`, payload);
       setIsOpen(false);
-    };
+    }catch{
+      console.log("Error")
+    }
+  };
+
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDate(event.target.value);
+  };
+
   return (
-    <Modal isOpen = {isOpen} onRequestClose={closeModal}>
-      <div>
-        Hi
-        <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          console.log("Files: ", res);
-          alert("Upload Completed");
-        }}
-        onUploadError={(error: Error) => {
-          alert(`ERROR! ${error.message}`);
-        }}
-      />
+    <div>
+      <button onClick={openModal}>Open Modal</button>
+      <Modal isOpen={isOpen} onRequestClose={closeModal}>
+        <div className={s.modal}>
+          <h2 className={s.header}>⚔️Challenger a Player⚔️</h2>
+          <p>Search Opponent</p>
+          <SelectSearch
+            options={options}
+            placeholder="Search Opponent"
+            autoFocus
+            search
+            onChange={(value:any) => {
+              setChallengedUser(value);
+              console.log("Selected Value: ", value);
+            }}
+            getOptions={getOptions}
+          />
+          <p>Date and Time</p>
+          <input 
+            className={s.input} 
+            type="datetime-local" 
+            placeholder="Enter date and time" 
+            value={date} 
+            onChange={handleDateChange} 
+          />
+          <p>Location</p>
+          <input 
+            className={s.input} 
+            type="text" 
+            name="Location"
+            placeholder="Enter location" 
+            value={location} 
+            onChange={handleLocationChange} 
+          />
+          {/* <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              console.log("Files: ", res);
+              alert("Upload Completed");
+            }}
+            onUploadError={(error: Error) => {
+              alert(`ERROR! ${error.message}`);
+            }}
+          /> */}
+          <button className={s.button} onClick={closeModal}>Submit</button>
+
         </div>
-    </Modal>
+      </Modal>
+    </div>
   );
 };
 
 export default FightRequestModal;
+
+

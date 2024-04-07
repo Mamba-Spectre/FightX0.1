@@ -8,10 +8,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   }
   
   .modalContent {
-    background-color: white;
+    background-color: rgb(68, 68, 68);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
