@@ -4,6 +4,7 @@ import axios from "axios";
 import s from "./RequestModal.module.scss";
 import versus from "../../../assets/versus.png";
 import dayjs from "dayjs";
+import Loader from "../Loader";
 
 const RequestsModal = ({
   isOpen,
@@ -13,8 +14,10 @@ const RequestsModal = ({
   closeModal: () => void;
 }) => {
   const [requestsData, setRequestsData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const fetchRequests = async () => {
     try {
+        setLoading(true);
       const auth = localStorage.getItem("common-auth");
       const username = localStorage.getItem("username");
       const response = await axios.get(
@@ -25,9 +28,10 @@ const RequestsModal = ({
           },
         }
       );
+      setLoading(false);
       setRequestsData(response.data.fightRequests);
-      console.log(response.data.fightRequests);
     } catch (err) {
+        setLoading(false);
       console.log(err);
     }
   };
@@ -74,7 +78,11 @@ const RequestsModal = ({
       >
         <div className={s.wrapper}>
           <h2 style={{ marginBottom: "8" }}>Requests</h2>
-          {requestsData.length === 0 ? (
+          {loading ? ( 
+            <div className={s.nan}>
+                <Loader />
+            </div>
+          ) : requestsData.length === 0 ? (
             <div className={s.nan}>No fight requests. Happy TRAINING</div>
           ) : (
             requestsData.map((request: any) => (
