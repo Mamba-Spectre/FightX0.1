@@ -9,12 +9,17 @@ import dayjs from "dayjs";
 import FightRequestModal from "../FightRequestModal";
 import Login from "../Login";
 
+interface UserData {
+  username: string;
+  profilePicture: string;
+}
+
 const HomePage = () => {
   const [isButtonClicked, setIsButtonClicked] = useState("");
   const [forums, setForums] = useState([]);
   const [fights, setFights] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<UserData>({username: "", profilePicture: ""});
 
   const handleClick = (buttonType: string) => {
     console.log("Button Clicked", buttonType);
