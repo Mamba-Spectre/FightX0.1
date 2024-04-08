@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import s from "./HomePage.module.scss"; // Assuming the correct path to your Sass module
+import s from "./HomePage.module.scss"; 
 import google from "../../../assets/google.png";
 import enter from "../../../assets/enter.png";
 import versus from "../../../assets/versus.png";
@@ -27,9 +27,9 @@ const HomePage = () => {
   };
   const getForums = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/forum/getForum");
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/forum/getForum`);
       const fightResponse = await axios.get(
-        "http://localhost:8080/fights/getFights"
+        `${process.env.NEXT_PUBLIC_API_URL}/fights/getFights`
       );
       console.log(fightResponse.data);
       setFights(fightResponse?.data?.fights);
