@@ -101,29 +101,29 @@ const HomePage = () => {
                 />
                 <div className={s.divider} />
                 <button
-  className={`${s.navbarButton} ${
-    isButtonClicked === "challenge" ? s.isButtonClicked : ""
-  }`}
-  onClick={() => {
-    handleClick("challenge");
-    setFightChallengeModal(true);
-  }}
-  disabled={!userData.username || !userData.profilePicture}
->
-  Challenge!!
-</button>
-<button
-  className={`${s.navbarButton} ${
-    isButtonClicked === "list" ? s.isButtonClicked : ""
-  }`}
-  onClick={() => {
-    handleClick("list");
-    setRequestsModal((print) => !print);
-  }}
-  disabled={!userData.username || !userData.profilePicture}
->
-  Requests
-</button>
+                  className={`${s.navbarButton} ${
+                    isButtonClicked === "challenge" ? s.isButtonClicked : ""
+                  }`}
+                  onClick={() => {
+                    handleClick("challenge");
+                    setFightChallengeModal(true);
+                  }}
+                  disabled={!userData.username || !userData.profilePicture}
+                >
+                  Challenge!!
+                </button>
+                <button
+                  className={`${s.navbarButton} ${
+                    isButtonClicked === "list" ? s.isButtonClicked : ""
+                  }`}
+                  onClick={() => {
+                    handleClick("list");
+                    setRequestsModal((print) => !print);
+                  }}
+                  disabled={!userData.username || !userData.profilePicture}
+                >
+                  Requests
+                </button>
                 <span className={s.userButtons}>
                   {userData?.username ? (
                     <>
@@ -203,8 +203,22 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
-              {isButtonClicked === "challenge" && <FightRequestModal modalOpen={fightChallengeModal} closeModal={()=>{setFightChallengeModal(false),setIsButtonClicked("")}}/>}
-              {requestsModal && (<RequestsModal isOpen={requestsModal} closeModal={()=>{setRequestsModal(false),setIsButtonClicked("")}}/>)}
+              {isButtonClicked === "challenge" && (
+                <FightRequestModal
+                  modalOpen={fightChallengeModal}
+                  closeModal={() => {
+                    setFightChallengeModal(false), setIsButtonClicked("");
+                  }}
+                />
+              )}
+              {requestsModal && (
+                <RequestsModal
+                  isOpen={requestsModal}
+                  closeModal={() => {
+                    setRequestsModal(false), setIsButtonClicked("");
+                  }}
+                />
+              )}
               {loginModalOpen && (
                 <Login
                   modalOpen={loginModalOpen}

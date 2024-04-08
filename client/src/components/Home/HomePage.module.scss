@@ -1,6 +1,9 @@
+.main{
+  background-color: #292E32;
+}
 .root {
   width: 100vw;
-  background-color: rgb(39, 39, 39);
+  background-color: #333;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
   .navbar {
     width: 60%;
@@ -9,8 +12,8 @@
     justify-content: center;
     margin: 0 auto;
     padding: 8px 0px;
-    border-left: 1px solid #535c65;
-    border-right: 1px solid #535c65;
+    // border-left: 1px solid #535c65;
+    // border-right: 1px solid #535c65;
     img {
       width: 36px;
       height: 36px;
@@ -107,6 +110,7 @@
 }
 .body {
   background: #2f3337;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
   width: 60%;
   height: 100vh;
   display: flex;
