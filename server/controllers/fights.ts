@@ -28,6 +28,7 @@ export const registerFight = async (req: express.Request, res: express.Response)
 }
 
 export const getFightRequests = async (req: express.Request, res: express.Response) => {
+    const { Authorization } = req.headers;
     const { username } = req.query;
     if (!username) {
         return res.status(400).send({ message: "Username is required" });
@@ -37,7 +38,7 @@ export const getFightRequests = async (req: express.Request, res: express.Respon
 }
 
 export const acceptFight = async (req: express.Request, res: express.Response) => {
-    const { fightRequestId } = req.body;
+    const { fightRequestId } = req.query;
     if(!fightRequestId){
         return res.status(400).send({ message: "Missing Fight Request ID" });
     }
@@ -53,6 +54,19 @@ export const acceptFight = async (req: express.Request, res: express.Response) =
     });
     await FightRequestModal.findByIdAndDelete(fightRequestId);
     res.status(200).send({ message: "Fight accepted" }).end();
+}
+
+export const rejectFight = async (req: express.Request, res: express.Response) => {
+    const { fightRequestId } = req.query;
+    if(!fightRequestId){
+        return res.status(400).send({ message: "Missing Fight Request ID" });
+    }
+    const fightRequest = await FightRequestModal.findById(fightRequestId);
+    if(!fightRequest){
+        return res.status(404).send({ message: "Fight Request not found" });
+    }
+    await FightRequestModal.findByIdAndDelete(fightRequestId);
+    res.status(200).send({ message: "Fight request rejected" }).end();
 }
 
 export const getFights = async (req: express.Request, res: express.Response) => {

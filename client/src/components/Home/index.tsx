@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import FightRequestModal from "../FightRequestModal";
 import Login from "../Login";
 import Loader from "../Loader";
+import RequestsModal from "../RequestsModal";
 
 interface UserData {
   username: string;
@@ -20,6 +21,8 @@ const HomePage = () => {
   const [forums, setForums] = useState([]);
   const [fights, setFights] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [fightChallengeModal, setFightChallengeModal] = useState(false);
+  const [requestsModal, setRequestsModal] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     username: "",
     profilePicture: "",
@@ -80,52 +83,69 @@ const HomePage = () => {
   return (
     <>
       <div className={s.main}>
-        {loading ? (<div className={s.loader}>
-          <Loader/></div>):(
+        {loading ? (
+          <div className={s.loader}>
+            <Loader />
+          </div>
+        ) : (
           <>
-          <div className={s.root}>
-            <div className={s.navbar}>
-              <span className={s.pageLogo}>
-                <img src={google.src} alt="Google Logo" />
-              </span>
-              <input type="text" className={s.search} placeholder="Search..." />
-              <div className={s.divider} />
-              <button
-                className={`${s.navbarButton} ${
-                  isButtonClicked === "challenge" ? s.isButtonClicked : ""
-                }`}
-                onClick={() => handleClick("challenge")}
-              >
-                Challenge!!
-              </button>
-              <button
-                className={`${s.navbarButton} ${
-                  isButtonClicked === "list" ? s.isButtonClicked : ""
-                }`}
-                onClick={() => handleClick("list")}
-              >
-                Requests
-              </button>
-              <span className={s.userButtons}>
-                {userData?.username ? (
-                  <>
+            <div className={s.root}>
+              <div className={s.navbar}>
+                <span className={s.pageLogo}>
+                  <img src={google.src} alt="Google Logo" />
+                </span>
+                <input
+                  type="text"
+                  className={s.search}
+                  placeholder="Search..."
+                />
+                <div className={s.divider} />
+                <button
+  className={`${s.navbarButton} ${
+    isButtonClicked === "challenge" ? s.isButtonClicked : ""
+  }`}
+  onClick={() => {
+    handleClick("challenge");
+    setFightChallengeModal(true);
+  }}
+  disabled={!userData.username || !userData.profilePicture}
+>
+  Challenge!!
+</button>
+<button
+  className={`${s.navbarButton} ${
+    isButtonClicked === "list" ? s.isButtonClicked : ""
+  }`}
+  onClick={() => {
+    handleClick("list");
+    setRequestsModal((print) => !print);
+  }}
+  disabled={!userData.username || !userData.profilePicture}
+>
+  Requests
+</button>
+                <span className={s.userButtons}>
+                  {userData?.username ? (
+                    <>
+                      <img
+                        onClick={() =>
+                          setUserButtonClicked((prevState) => !prevState)
+                        }
+                        className={s.profilePicture}
+                        src={userData?.profilePicture}
+                        alt=""
+                      />
+                    </>
+                  ) : (
                     <img
-                      onClick={() => setUserButtonClicked(true)}
-                      className={s.profilePicture}
-                      src={userData?.profilePicture}
-                      alt=""
+                      onClick={() => {
+                        setLoginModalOpen(true);
+                      }}
+                      src={enter.src}
+                      alt="Enter"
                     />
-                  </>
-                ) : (
-                  <img
-                    onClick={() => {
-                      setLoginModalOpen(true);
-                    }}
-                    src={enter.src}
-                    alt="Enter"
-                  />
-                )}
-                {userButtonClicked && (
+                  )}
+                  {userButtonClicked && (
                     <div className={s.userDropdown}>
                       <button>View Personal Details</button>
                       <button
@@ -137,56 +157,61 @@ const HomePage = () => {
                         Logout
                       </button>
                     </div>
-                )}
-              </span>
+                  )}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className={s.body}>
-            <div className={s.blogs}>
-              {Object.entries(groupForumsByDate(forums)).map(
-                ([date, forumsForDate]: [any, any]) => (
-                  <div key={date}>
-                    <p className={s.date}>{date}</p>
-                    {forumsForDate.map((forum: any) => (
-                      <div key={forum._id} className={s.blog}>
-                        <p>
-                          {forum.title.length > 40
-                            ? `${forum.title.substring(0, 40)}...`
-                            : forum.title}
-                        </p>
-                        <p className={s.authorName}>{forum.createdBy}</p>
-                      </div>
-                    ))}
+            <div className={s.body}>
+              <div className={s.blogs}>
+                {Object.entries(groupForumsByDate(forums)).map(
+                  ([date, forumsForDate]: [any, any]) => (
+                    <div key={date}>
+                      <p className={s.date}>{date}</p>
+                      {forumsForDate.map((forum: any) => (
+                        <div key={forum._id} className={s.blog}>
+                          <p>
+                            {forum.title.length > 40
+                              ? `${forum.title.substring(0, 40)}...`
+                              : forum.title}
+                          </p>
+                          <p className={s.authorName}>{forum.createdBy}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                )}
+              </div>
+              <div className={s.matches}>
+                <p className={s.heading} style={{ marginLeft: "12" }}>
+                  Matches
+                </p>
+                {fights.map((fight: any) => (
+                  <div key={fight?._id} className={s.match}>
+                    <p className={s.versus}>
+                      {fight?.challenger}
+                      <img
+                        className={s.versusImg}
+                        src={versus.src}
+                        alt="Versus"
+                      />
+                      {fight?.challenged}
+                    </p>
+                    <p className={s.timeDate}>
+                      {dayjs(fight.date).format("MMM DD, HH:mm")}
+                    </p>
+                    <div className={s.divider} />
                   </div>
-                )
+                ))}
+              </div>
+              {isButtonClicked === "challenge" && <FightRequestModal modalOpen={fightChallengeModal} closeModal={()=>{setFightChallengeModal(false),setIsButtonClicked("")}}/>}
+              {requestsModal && (<RequestsModal isOpen={requestsModal} closeModal={()=>{setRequestsModal(false),setIsButtonClicked("")}}/>)}
+              {loginModalOpen && (
+                <Login
+                  modalOpen={loginModalOpen}
+                  closeModal={() => setLoginModalOpen(false)}
+                />
               )}
             </div>
-            <div className={s.matches}>
-              <p className={s.heading} style={{ marginLeft: "12" }}>
-                Matches
-              </p>
-              {fights.map((fight: any) => (
-                <div key={fight?._id} className={s.match}>
-                  <p className={s.versus}>
-                    {fight?.challenger}
-                    <img className={s.versusImg} src={versus.src} alt="Versus" />
-                    {fight?.challenged}
-                  </p>
-                  <p className={s.timeDate}>
-                    {dayjs(fight.date).format("MMM DD, HH:mm")}
-                  </p>
-                  <div className={s.divider} />
-                </div>
-              ))}
-            </div>
-            {isButtonClicked === "challenge" && <FightRequestModal />}
-            {loginModalOpen && (
-              <Login
-                modalOpen={loginModalOpen}
-                closeModal={() => setLoginModalOpen(false)}
-              />
-            )}
-          </div>
           </>
         )}
       </div>

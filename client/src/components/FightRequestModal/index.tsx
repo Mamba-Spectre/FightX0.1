@@ -2,13 +2,15 @@
 import React, { useState } from "react";
 import Modal from "../Modal";
 import s from "./FightRequestModal.module.scss";
-import { UploadButton } from "../../utils/uploadthing";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import 'react-select-search/style.css'
 import SelectSearch, { SelectSearchOption } from "react-select-search";
 
-const FightRequestModal = () => {
-  const [isOpen, setIsOpen] = useState(true);
+const FightRequestModal = ({modalOpen,closeModal}:{
+  modalOpen: boolean;
+  closeModal: () => void;
+}) => {
   const [options, setOptions] = useState<SelectSearchOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [challengedUser, setChallengedUser] = useState(null);
@@ -37,22 +39,36 @@ const FightRequestModal = () => {
       return [];
     }
   };
-
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  // const payload = {
-  //   challenger : "testuser1",
-  //   challenged: challengedUser,
-  //   location,
-  //   date,
-  // };
-  // console.log("Payload: ", payload)
-  // await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/fights/registerFight`, payload);
-  const closeModal = async () => {
-      setIsOpen(false);
-  };
+  const handleSubmit = async () => {
+    setLoading(true);
+    try{
+      const challenger = localStorage.getItem("username");
+      const commonAuth = localStorage.getItem("common-auth");
+      const payload = {
+        challenger,
+        challenged: challengedUser,
+        location,
+        date,
+      };
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/fights/registerFight`, payload , {
+        headers: {
+          "common-auth": commonAuth,
+        },
+      });
+    }catch(err:any){
+      setLoading(false);
+      toast.error(err?.response?.data?.message || "An error occurred", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(event.target.value);
@@ -64,7 +80,7 @@ const FightRequestModal = () => {
 
   return (
     <div>
-      <Modal isOpen={isOpen} onRequestClose={closeModal}>
+      <Modal isOpen={modalOpen} onRequestClose={closeModal}>
         <div className={s.modal}>
           <h2 className={s.header}>⚔️Challenger a Player⚔️</h2>
           <p>Search Opponent</p>
@@ -97,19 +113,20 @@ const FightRequestModal = () => {
             value={location} 
             onChange={handleLocationChange} 
           />
-          {/* <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              console.log("Files: ", res);
-              alert("Upload Completed");
-            }}
-            onUploadError={(error: Error) => {
-              alert(`ERROR! ${error.message}`);
-            }}
-          /> */}
-          <button className={s.button} onClick={closeModal}>Submit</button>
-
+          <button className={s.button} onClick={()=>handleSubmit()}>Submit</button>
         </div>
+        <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       </Modal>
     </div>
   );

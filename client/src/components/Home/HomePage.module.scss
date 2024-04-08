@@ -52,6 +52,9 @@
       margin-left: 10px;
       border-left: 1px solid #535c65;
     }
+    .navbarButton:disabled {
+      color: #535c65;
+    }
 
     .navbarButton:hover {
       border-bottom: 3px solid #ffffff !important;
