@@ -22,7 +22,6 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData>({username: "", profilePicture: ""});
 
   const handleClick = (buttonType: string) => {
-    console.log("Button Clicked", buttonType);
     setIsButtonClicked(buttonType);
   };
   const getForums = async () => {
@@ -42,7 +41,7 @@ const HomePage = () => {
     const groupedForums: any = {};
 
     forums.forEach((forum: any) => {
-      const date = dayjs(forum.date).format("MMMM D"); // Format date as "April 7"
+      const date = dayjs(forum.date).format("MMMM D");
       if (groupedForums[date]) {
         groupedForums[date].push(forum);
       } else {
@@ -95,15 +94,20 @@ const HomePage = () => {
             Requests
           </button>
           <span className={s.userButtons}>
-            <p>{userData?.username}</p>
-            <img className={s.profilePicture} src={userData?.profilePicture} alt=""/>
-            <img
-              onClick={() => {
-                setLoginModalOpen(true);
-              }}
-              src={enter.src}
-              alt="Enter"
-            />
+            {userData?.username ? (
+              <>
+              <img className={s.profilePicture} src={userData?.profilePicture} alt=""/>
+              </>
+
+            ):(
+              <img
+                onClick={() => {
+                  setLoginModalOpen(true);
+                }}
+                src={enter.src}
+                alt="Enter"
+              />
+            )}
           </span>
         </div>
       </div>
