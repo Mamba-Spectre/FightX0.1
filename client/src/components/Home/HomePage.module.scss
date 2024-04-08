@@ -65,8 +65,15 @@
       padding: 0 12px 0 22px;
     }
     .userButtons {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
       padding: 0px 18px;
       margin-left: auto;
+      .profilePicture{
+        border-radius: 50%;
+      }
     }
   }
 }
