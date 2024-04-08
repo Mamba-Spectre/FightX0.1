@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import s from "./HomePage.module.scss"; 
+import s from "./HomePage.module.scss";
 import google from "../../../assets/google.png";
 import enter from "../../../assets/enter.png";
 import versus from "../../../assets/versus.png";
@@ -8,6 +8,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import FightRequestModal from "../FightRequestModal";
 import Login from "../Login";
+import Loader from "../Loader";
 
 interface UserData {
   username: string;
@@ -19,21 +20,30 @@ const HomePage = () => {
   const [forums, setForums] = useState([]);
   const [fights, setFights] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData>({username: "", profilePicture: ""});
+  const [userData, setUserData] = useState<UserData>({
+    username: "",
+    profilePicture: "",
+  });
+  const [userButtonClicked, setUserButtonClicked] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleClick = (buttonType: string) => {
     setIsButtonClicked(buttonType);
   };
   const getForums = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/forum/getForum`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/forum/getForum`
+      );
       const fightResponse = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/fights/getFights`
       );
       console.log(fightResponse.data);
       setFights(fightResponse?.data?.fights);
       setForums(response?.data?.forums);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
@@ -54,14 +64,13 @@ const HomePage = () => {
 
     return reversedGroupedForums;
   };
-  const getUserData = () =>{
+  const getUserData = () => {
     const username = localStorage.getItem("username");
     const profilePicture = localStorage.getItem("profilePicture");
-    if(username && profilePicture){
-      setUserData({username, profilePicture});
+    if (username && profilePicture) {
+      setUserData({ username, profilePicture });
     }
-  
-  }
+  };
 
   useEffect(() => {
     getForums();
@@ -70,91 +79,115 @@ const HomePage = () => {
 
   return (
     <>
-      <div className={s.root}>
-        <div className={s.navbar}>
-          <span className={s.pageLogo}>
-            <img src={google.src} alt="Google Logo" />
-          </span>
-          <input type="text" className={s.search} placeholder="Search..." />
-          <div className={s.divider} />
-          <button
-            className={`${s.navbarButton} ${
-              isButtonClicked === "challenge" ? s.isButtonClicked : ""
-            }`}
-            onClick={() => handleClick("challenge")}
-          >
-            Challenge!!
-          </button>
-          <button
-            className={`${s.navbarButton} ${
-              isButtonClicked === "list" ? s.isButtonClicked : ""
-            }`}
-            onClick={() => handleClick("list")}
-          >
-            Requests
-          </button>
-          <span className={s.userButtons}>
-            {userData?.username ? (
-              <>
-              <img className={s.profilePicture} src={userData?.profilePicture} alt=""/>
-              </>
-
-            ):(
-              <img
-                onClick={() => {
-                  setLoginModalOpen(true);
-                }}
-                src={enter.src}
-                alt="Enter"
+      <div className={s.main}>
+        {loading ? (<div className={s.loader}>
+          <Loader/></div>):(
+          <>
+          <div className={s.root}>
+            <div className={s.navbar}>
+              <span className={s.pageLogo}>
+                <img src={google.src} alt="Google Logo" />
+              </span>
+              <input type="text" className={s.search} placeholder="Search..." />
+              <div className={s.divider} />
+              <button
+                className={`${s.navbarButton} ${
+                  isButtonClicked === "challenge" ? s.isButtonClicked : ""
+                }`}
+                onClick={() => handleClick("challenge")}
+              >
+                Challenge!!
+              </button>
+              <button
+                className={`${s.navbarButton} ${
+                  isButtonClicked === "list" ? s.isButtonClicked : ""
+                }`}
+                onClick={() => handleClick("list")}
+              >
+                Requests
+              </button>
+              <span className={s.userButtons}>
+                {userData?.username ? (
+                  <>
+                    <img
+                      onClick={() => setUserButtonClicked(true)}
+                      className={s.profilePicture}
+                      src={userData?.profilePicture}
+                      alt=""
+                    />
+                  </>
+                ) : (
+                  <img
+                    onClick={() => {
+                      setLoginModalOpen(true);
+                    }}
+                    src={enter.src}
+                    alt="Enter"
+                  />
+                )}
+                {userButtonClicked && (
+                    <div className={s.userDropdown}>
+                      <button>View Personal Details</button>
+                      <button
+                        onClick={() => {
+                          localStorage.clear();
+                          window.location.reload();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                )}
+              </span>
+            </div>
+          </div>
+          <div className={s.body}>
+            <div className={s.blogs}>
+              {Object.entries(groupForumsByDate(forums)).map(
+                ([date, forumsForDate]: [any, any]) => (
+                  <div key={date}>
+                    <p className={s.date}>{date}</p>
+                    {forumsForDate.map((forum: any) => (
+                      <div key={forum._id} className={s.blog}>
+                        <p>
+                          {forum.title.length > 40
+                            ? `${forum.title.substring(0, 40)}...`
+                            : forum.title}
+                        </p>
+                        <p className={s.authorName}>{forum.createdBy}</p>
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
+            </div>
+            <div className={s.matches}>
+              <p className={s.heading} style={{ marginLeft: "12" }}>
+                Matches
+              </p>
+              {fights.map((fight: any) => (
+                <div key={fight?._id} className={s.match}>
+                  <p className={s.versus}>
+                    {fight?.challenger}
+                    <img className={s.versusImg} src={versus.src} alt="Versus" />
+                    {fight?.challenged}
+                  </p>
+                  <p className={s.timeDate}>
+                    {dayjs(fight.date).format("MMM DD, HH:mm")}
+                  </p>
+                  <div className={s.divider} />
+                </div>
+              ))}
+            </div>
+            {isButtonClicked === "challenge" && <FightRequestModal />}
+            {loginModalOpen && (
+              <Login
+                modalOpen={loginModalOpen}
+                closeModal={() => setLoginModalOpen(false)}
               />
             )}
-          </span>
-        </div>
-      </div>
-      <div className={s.body}>
-        <div className={s.blogs}>
-          {Object.entries(groupForumsByDate(forums)).map(
-            ([date, forumsForDate]: [any, any]) => (
-              <div key={date}>
-                <p className={s.date}>{date}</p>
-                {forumsForDate.map((forum: any) => (
-                  <div key={forum._id} className={s.blog}>
-                    <p>
-                      {forum.title.length > 40
-                        ? `${forum.title.substring(0, 40)}...`
-                        : forum.title}
-                    </p>
-                    <p className={s.authorName}>{forum.createdBy}</p>
-                  </div>
-                ))}
-              </div>
-            )
-          )}
-        </div>
-        <div className={s.matches}>
-          <p className={s.heading} style={{ marginLeft: "12" }}>
-            Matches
-          </p>
-          {fights.map((fight: any) => (
-            <div key={fight?._id} className={s.match}>
-              <p className={s.versus}>
-                {fight?.challenger}
-                <img className={s.versusImg} src={versus.src} alt="Versus" />
-                {fight?.challenged}
-              </p>
-              <p className={s.timeDate}>
-                {dayjs(fight.date).format("MMM DD, HH:mm")}
-              </p>
-              <div className={s.divider} />
-            </div>
-          ))}
-        </div>
-        {isButtonClicked === "challenge" && <FightRequestModal />}
-        {loginModalOpen && (
-          <Login
-            modalOpen={loginModalOpen}
-            closeModal={() => setLoginModalOpen(false)}
-          />
+          </div>
+          </>
         )}
       </div>
     </>

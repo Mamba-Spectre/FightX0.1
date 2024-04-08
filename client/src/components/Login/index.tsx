@@ -44,6 +44,7 @@ const Login = ({
           localStorage.setItem("username", response?.data?.username);
           localStorage.setItem("profilePicture", response?.data?.profilePicture);
         }
+        window.location.reload();
         closeModal();
 
       }
