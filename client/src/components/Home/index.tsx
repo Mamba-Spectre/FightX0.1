@@ -10,6 +10,7 @@ import FightRequestModal from "../FightRequestModal";
 import Login from "../Login";
 import Loader from "../Loader";
 import RequestsModal from "../RequestsModal";
+import FightDetails from "../FightDetails";
 
 interface UserData {
   username: string;
@@ -22,7 +23,9 @@ const HomePage = () => {
   const [fights, setFights] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [fightChallengeModal, setFightChallengeModal] = useState(false);
+  const [fightDetailsModal, setFightDetailsModal] = useState(false);
   const [requestsModal, setRequestsModal] = useState(false);
+  const [fightID, setFightID] = useState("");
   const [userData, setUserData] = useState<UserData>({
     username: "",
     profilePicture: "",
@@ -124,6 +127,9 @@ const HomePage = () => {
                 >
                   Requests
                 </button>
+                <button className={s.navbarButton} disabled>
+                  Forums
+                </button>
                 <span className={s.userButtons}>
                   {userData?.username ? (
                     <>
@@ -186,7 +192,7 @@ const HomePage = () => {
                   Matches
                 </p>
                 {fights.map((fight: any) => (
-                  <div key={fight?._id} className={s.match}>
+                  <div key={fight?._id} className={s.match} onClick={()=>{setFightDetailsModal(true),setFightID(fight._id)}}>
                     <p className={s.versus}>
                       {fight?.challenger}
                       <img
@@ -224,6 +230,13 @@ const HomePage = () => {
                   modalOpen={loginModalOpen}
                   closeModal={() => setLoginModalOpen(false)}
                 />
+              )}
+              {fightDetailsModal && (
+                <FightDetails
+                  modalOpen={fightDetailsModal}
+                  closeModal={() => setFightDetailsModal(false)}
+                  fightID={fightID}
+                  />
               )}
             </div>
           </>
