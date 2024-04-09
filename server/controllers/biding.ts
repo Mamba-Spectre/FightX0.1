@@ -45,7 +45,7 @@ export const getBids = async (req: express.Request, res: express.Response) => {
 }
 
 export const getFightBiddingOdds = async (req: express.Request, res: express.Response) => {
-    const fightingId = req.params.id;
+    const fightingId = req.query.fightId;
     if (!fightingId) {
         return res.status(400).send({ message: 'Fight ID is required' });
     }
