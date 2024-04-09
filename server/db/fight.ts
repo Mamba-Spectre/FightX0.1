@@ -1,17 +1,31 @@
 import mongoose from "mongoose";
 
 
+// const FightSchema = new mongoose.Schema({
+//     challenger: { type: String, required: true },
+//     challenged: { type: String, required: true },
+//     winner: { type: String, required: false },
+//     date: { type: Date, required: true },
+//     location: { type: String, required: true },
+//     bids: {
+//         challenger: { type: Number, default: 0 },
+//         challenged: { type: Number, default: 0 }
+//     }
+// });
 const FightSchema = new mongoose.Schema({
-    challenger: { type: String, required: true },
-    challenged: { type: String, required: true },
+    challenger: {
+        name: { type: String, required: true },
+        bids: { type: Number, default: 0 }
+    },
+    challenged: {
+        name: { type: String, required: true },
+        bids: { type: Number, default: 0 }
+    },
     winner: { type: String, required: false },
     date: { type: Date, required: true },
-    location: { type: String, required: true },
-    bids: {
-        challenger: { type: Number, default: 0 },
-        challenged: { type: Number, default: 0 }
-    }
+    location: { type: String, required: true }
 });
+
 
 
 const FightRequestSchema = new mongoose.Schema({

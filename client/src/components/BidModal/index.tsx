@@ -8,11 +8,13 @@ const BidModal = ({
   onRequestClose,
   fightId,
   fighterName,
+  person
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   fightId: string;
   fighterName: string;
+    person: string;
 }) => {
   const [bid, setBid] = useState(0);
 
@@ -25,7 +27,7 @@ const BidModal = ({
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/bids/registerBid`,
-        { fighter: fighterName, amount: bid },
+        { fighter: fighterName, amount: bid,person: person },
         {
           params: {
             username,

@@ -8,14 +8,16 @@ import BidModal from "../BidModal";
 
 interface FightDetails {
   _id: string;
-  challenger: string;
-  challenged: string;
+  challenger: {
+    name: string;
+    bids: number;
+  };
+  challenged: {
+    name: string;
+    bids: number;
+  };
   location: string;
   date: string;
-  bids: {
-    challenger: number;
-    challenged: number;
-  };
 }
 
 const FightDetails = ({
@@ -29,17 +31,20 @@ const FightDetails = ({
 }) => {
   const [fightDetails, setFightDetails] = useState<FightDetails>({
     _id: "",
-    challenger: "",
-    challenged: "",
+    challenger: {
+      name: "",
+      bids: 0,
+    },
+    challenged: {
+      name: "",
+      bids: 0,
+    },
     location: "",
     date: "",
-    bids: {
-      challenger: 0,
-      challenged: 0,
-    },
   });
   const [bidModal, setBidModal] = useState(false);
   const [fighterName, setFighterName] = useState("");
+  const [person,setPerson] = useState("")
   const fetchFightDetails = async () => {
     try {
       const response = await axios.get(
@@ -59,9 +64,9 @@ const FightDetails = ({
     <Modal isOpen={modalOpen} onRequestClose={closeModal}>
       <div className={s.root}>
         <div className={s.userDetails}>
-          <p>{fightDetails?.challenger}</p>
+          <p>{fightDetails?.challenger?.name}</p>
           <img src={versus.src} alt="versus" />
-          <p>{fightDetails?.challenged}</p>
+          <p>{fightDetails?.challenged?.name}</p>
         </div>
         <div className={s.otherDetails}>
         <p>{fightDetails?.location}</p>
@@ -70,12 +75,12 @@ const FightDetails = ({
         <div className={s.bids}>
           <h1>Bids</h1>
           <div className={s.bid}>
-            <p onClick={()=>{setBidModal(true),setFighterName(fightDetails?.challenger)}}>{fightDetails?.bids?.challenger}</p>
-            <p onClick={()=>{setBidModal(true),setFighterName(fightDetails?.challenged)}}>{fightDetails?.bids?.challenged}</p>
+            <p onClick={()=>{setPerson("challenger"),setBidModal(true),setFighterName(fightDetails?.challenger?.name)}}>{fightDetails?.challenger?.bids}</p>
+            <p onClick={()=>{setPerson("challenged"),setBidModal(true),setFighterName(fightDetails?.challenged?.name)}}>{fightDetails?.challenged?.bids}</p>
           </div>
         </div>
       </div>
-      {bidModal && <BidModal isOpen={bidModal} fightId={fightID} onRequestClose={() => setBidModal(false)} fighterName = {fighterName} />}
+      {bidModal && <BidModal isOpen={bidModal} fightId={fightID} onRequestClose={() => setBidModal(false)} fighterName = {fighterName} person={person}/>}
     </Modal>
   );
 };

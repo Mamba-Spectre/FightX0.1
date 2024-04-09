@@ -3,8 +3,7 @@ import { BidModal, createBid } from '../db/biding';
 import { FightModal } from '../db/fight';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
-    const { username,fightId } = req.query;
-    // const fightId = req.params.id;
+    const { username,fightId,person } = req.query;
     const { fighter, amount } = req.body;
     if (!fighter || !amount || !username) {
         return res.status(400).send({ message: 'Missing required fields' });
@@ -22,15 +21,18 @@ export const registerBid = async (req: express.Request, res: express.Response) =
         if (!fight) {
             return res.status(404).send({ message: 'Fight not found' });
         }
-        fight.bids[fighter] += amount;
+        if(fight.challenger.name === fighter){
+            fight.challenger.bids += amount;
+        }
+        else{
+            fight.challenged.bids += amount;
+        }
         await fight.save();
-
         res.status(200).send({ message: 'Bid registered', updatedFight: fight }).end();
     } catch (error) {
         console.error('Error registering bid:', error);
         res.status(500).send({ message: 'Internal server error' });
     }
-    res.status(200).send({ message: 'Bid registered' }).end();
 };
 
 export const getBids = async (req: express.Request, res: express.Response) => {
@@ -49,8 +51,8 @@ export const getFightBiddingOdds = async (req: express.Request, res: express.Res
     }
     const bookmakerEdge = 0.1;
     const fightDetails = await FightModal.findById(fightingId);
-    const totalChallengerBids = fightDetails?.bids.challenger;
-    const totalChallengedBids = fightDetails?.bids.challenged;
+    const totalChallengerBids = fightDetails?.challenger?.bids;
+    const totalChallengedBids = fightDetails?.challenged?.bids;
     if (!totalChallengerBids || !totalChallengedBids) {
         return res.status(400).send({ message: 'Bids not found' });
     }

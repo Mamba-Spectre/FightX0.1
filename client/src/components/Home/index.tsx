@@ -194,13 +194,13 @@ const HomePage = () => {
                 {fights.map((fight: any) => (
                   <div key={fight?._id} className={s.match} onClick={()=>{setFightDetailsModal(true),setFightID(fight._id)}}>
                     <p className={s.versus}>
-                      {fight?.challenger}
+                      {fight?.challenger?.name}
                       <img
                         className={s.versusImg}
                         src={versus.src}
                         alt="Versus"
                       />
-                      {fight?.challenged}
+                      {fight?.challenged?.name}
                     </p>
                     <p className={s.timeDate}>
                       {dayjs(fight.date).format("MMM DD, HH:mm")}

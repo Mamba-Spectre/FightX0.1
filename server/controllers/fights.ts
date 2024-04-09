@@ -48,8 +48,8 @@ export const acceptFight = async (req: express.Request, res: express.Response) =
         return res.status(404).send({ message: "Fight Request not found" });
     }
     await createFight({
-        challenger: fightRequest.challenger,
-        challenged: fightRequest.challenged,
+        challenger: {name:fightRequest.challenger},
+        challenged: {name:fightRequest.challenged},
         date: fightRequest.date,
         location: fightRequest.location,
     });
