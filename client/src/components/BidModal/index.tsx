@@ -16,7 +16,7 @@ const BidModal = ({
   fighterName: string;
     person: string;
 }) => {
-  const [bid, setBid] = useState(null);
+  const [bid, setBid] = useState(0);
 
   const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBid(parseInt(e.target.value));
