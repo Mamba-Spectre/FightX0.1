@@ -42,13 +42,15 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        p{
+        button{
             background-color: antiquewhite;
             width: 100px;
             padding: 4px;
             border-radius: 8px;
             color: black;
-
+        }
+        button:disabled{
+            background-color: grey;
         }
     }
   }

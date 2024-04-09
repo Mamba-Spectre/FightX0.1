@@ -106,24 +106,26 @@ const FightDetails = ({
           <div className={s.bids}>
             <h1>Bids</h1>
             <div className={s.bid}>
-              <p
+              <button
                 onClick={() => {
                   setPerson("challenger"),
                   setBidModal(true),
                   setFighterName(fightDetails?.challenger?.name)
                 }}
+                disabled={!localStorage.getItem("username")}
               >
                 {bids?.challengerTeamOdds !== undefined ? bids.challengerTeamOdds.toFixed(2) : ""}
-              </p>
-              <p
+              </button>
+              <button
                 onClick={() => {
                   setPerson("challenged"),
                   setBidModal(true),
                   setFighterName(fightDetails?.challenged?.name)
                 }}
+                disabled={!localStorage.getItem("username")}
               >
                 {bids?.challengedTeamOdds !== undefined ? bids.challengedTeamOdds.toFixed(2) : ""}
-              </p>
+              </button>
             </div>
           </div>
         </div>
