@@ -92,7 +92,6 @@ const FightRequestModal = ({modalOpen,closeModal}:{
             search
             onChange={(value:any) => {
               setChallengedUser(value);
-              console.log("Selected Value: ", value);
             }}
             getOptions={getOptions}
           />
