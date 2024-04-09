@@ -1,6 +1,7 @@
 import express from "express";
 import dayjs from "dayjs";
 import { FightModal, FightRequestModal, createFight, createFightRequest } from "../db/fight";
+import { getFightBiddingOdds } from "./biding";
 
 export const registerFight = async (req: express.Request, res: express.Response) => {
     const { challenger, challenged, date, location } = req.body;
@@ -73,22 +74,34 @@ export const getFights = async (req: express.Request, res: express.Response) => 
     const fights = await FightModal.find();
     res.status(200).send({ fights }).end();
 }
-
-export const mockFIghts = async () => {
-const mockData = [{
-    challenger:"HarshVardhanSaroha",
-    challenged:"SaranshBibiyan",
-    date:"2024-05-01T00:00:00.000Z",
-    location:"Leisure Valley, Delhi Road Sonipat, Haryana",
-},{
-    challenger:"YashDahiya",
-    challenged:"ViditRaheja",
-    date:"2024-05-08T00:00:00.000Z",
-    location:"Haryana Sports Ground, Sonipat, Haryana",
-}];
-
-for (const data of mockData) {
-  await FightModal.create(data);
+export const getFightDetails = async (req: express.Request, res: express.Response) => {
+    const { fightID } = req.query;
+    console.log(req);
+    if (!getFightBiddingOdds) {
+        return res.status(400).send({ message: "Missing Fight ID" });
+    }
+    const fight = await FightModal.findById(fightID);
+    if (!fight) {
+        return res.status(404).send({ message: "Fight not found" });
+    }
+    res.status(200).send({ fight }).end();
 }
 
-console.log('Mock data inserted successfully.');}
+// export const mockFIghts = async () => {
+// const mockData = [{
+//     challenger:"HarshVardhanSaroha",
+//     challenged:"SaranshBibiyan",
+//     date:"2024-05-01T00:00:00.000Z",
+//     location:"Leisure Valley, Delhi Road Sonipat, Haryana",
+// },{
+//     challenger:"YashDahiya",
+//     challenged:"ViditRaheja",
+//     date:"2024-05-08T00:00:00.000Z",
+//     location:"Haryana Sports Ground, Sonipat, Haryana",
+// }];
+
+// for (const data of mockData) {
+//   await FightModal.create(data);
+// }
+
+// console.log('Mock data inserted successfully.');}

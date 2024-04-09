@@ -1,0 +1,54 @@
+.root {
+    padding: 20px;
+    .userDetails{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        // justify-content: center;
+        p{
+            font-size: large;
+        }
+        img{
+            width: 50px;
+            height: 50px;
+        }
+    }
+    .otherDetails{
+        text-align: center;
+    }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .bids {
+    text-align: center;
+    margin-top: 20px;
+    .bid{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        p{
+            background-color: antiquewhite;
+            width: 100px;
+            padding: 4px;
+            border-radius: 8px;
+            color: black;
+
+        }
+    }
+  }
+  
+  .bids h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+  
