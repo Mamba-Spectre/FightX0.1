@@ -4,8 +4,10 @@ import axios from "axios";
 import s from "./FightDetails.module.scss";
 import versus from "../../../assets/versus.png";
 import dayjs from "dayjs";
+import BidModal from "../BidModal";
 
 interface FightDetails {
+  _id: string;
   challenger: string;
   challenged: string;
   location: string;
@@ -26,6 +28,7 @@ const FightDetails = ({
   fightID: string;
 }) => {
   const [fightDetails, setFightDetails] = useState<FightDetails>({
+    _id: "",
     challenger: "",
     challenged: "",
     location: "",
@@ -35,6 +38,8 @@ const FightDetails = ({
       challenged: 0,
     },
   });
+  const [bidModal, setBidModal] = useState(false);
+  const [fighterName, setFighterName] = useState("");
   const fetchFightDetails = async () => {
     try {
       const response = await axios.get(
@@ -65,11 +70,12 @@ const FightDetails = ({
         <div className={s.bids}>
           <h1>Bids</h1>
           <div className={s.bid}>
-            <p>{fightDetails?.bids?.challenger}</p>
-            <p>{fightDetails?.bids?.challenged}</p>
+            <p onClick={()=>{setBidModal(true),setFighterName(fightDetails?.challenger)}}>{fightDetails?.bids?.challenger}</p>
+            <p onClick={()=>{setBidModal(true),setFighterName(fightDetails?.challenged)}}>{fightDetails?.bids?.challenged}</p>
           </div>
         </div>
       </div>
+      {bidModal && <BidModal isOpen={bidModal} fightId={fightID} onRequestClose={() => setBidModal(false)} fighterName = {fighterName} />}
     </Modal>
   );
 };

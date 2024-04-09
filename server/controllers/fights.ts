@@ -76,7 +76,6 @@ export const getFights = async (req: express.Request, res: express.Response) => 
 }
 export const getFightDetails = async (req: express.Request, res: express.Response) => {
     const { fightID } = req.query;
-    console.log(req);
     if (!getFightBiddingOdds) {
         return res.status(400).send({ message: "Missing Fight ID" });
     }

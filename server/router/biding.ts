@@ -5,7 +5,7 @@ import { isAuthenticated } from '../middleware';
 
 const router = express.Router();
 
-router.post('/registerBid',isAuthenticated ,registerBid);
+router.post('/registerBid' ,registerBid);
 router.get('/getBids', getBids);
 router.get('/getFightBiddingOdds', getFightBiddingOdds);
 

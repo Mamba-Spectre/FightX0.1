@@ -3,8 +3,8 @@ import { BidModal, createBid } from '../db/biding';
 import { FightModal } from '../db/fight';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
-    const { username } = req.query;
-    const fightId = req.params.id;
+    const { username,fightId } = req.query;
+    // const fightId = req.params.id;
     const { fighter, amount } = req.body;
     if (!fighter || !amount || !username) {
         return res.status(400).send({ message: 'Missing required fields' });
