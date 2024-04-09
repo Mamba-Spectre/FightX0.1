@@ -81,6 +81,7 @@ const HomePage = () => {
   useEffect(() => {
     getForums();
     getUserData();
+    debugger;
   }, []);
 
   return (
