@@ -1,6 +1,24 @@
 .modal {
   padding: 8px;
 
+  .versus{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    img{
+      width: 40px;
+      height: 40px;
+    }
+    .name{
+      font-size: 20px;
+      font-style: italic;
+      font-style: bold;
+      color: aquamarine;
+    }
+  }
+
+
   h2 {
     color: #e02020;
     margin-bottom: 20px;

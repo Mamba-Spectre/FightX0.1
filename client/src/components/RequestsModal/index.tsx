@@ -87,10 +87,10 @@ const RequestsModal = ({
           ) : (
             requestsData.map((request: any) => (
               <div key={request._id} className={s.request}>
-                <div className={s.timeLocation}>
+                {/* <div className={s.timeLocation}>
                   <p>{dayjs(request.date).format("MMMM D, HH:mm")}</p>
                   <p>{request.location}</p>
-                </div>
+                </div> */}
                 <div className={s.fightDetails}>
                   <div className={s.people}>
                     <p className={s.names}>{request.challenger}</p>

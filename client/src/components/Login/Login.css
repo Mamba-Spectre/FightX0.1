@@ -159,3 +159,14 @@
 .upload-photo div div{
   color: white;
 }
+.signup-button p,
+.login-button p {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.signup-button p:hover,
+.login-button p:hover {
+  color: #2688f1; 
+}

@@ -4,10 +4,8 @@ import axios from "axios";
 import s from "./FightDetails.module.scss";
 import versus from "../../../assets/versus.png";
 import dayjs from "dayjs";
-import Loader from "../Loader"; // Import the Loader component
+import Loader from "../Loader";
 import BidModal from "../BidModal";
-import { set } from "react-hook-form";
-
 interface FightDetails {
   _id: string;
   challenger: {
@@ -80,6 +78,8 @@ const FightDetails = ({
       console.log(err);
     }
   }
+  const currentTime = dayjs();
+  const isBiddingEnabled = currentTime.isBefore(dayjs(fightDetails.date));
 
   useEffect(() => {
     fetchFightDetails();
@@ -114,7 +114,7 @@ const FightDetails = ({
                   setBidModal(true),
                   setFighterName(fightDetails?.challenger?.name)
                 }}
-                disabled={!localStorage.getItem("username")}
+                disabled={!localStorage.getItem("username") || !isBiddingEnabled}
               >
                 {bids?.challengerTeamOdds !== undefined ? bids.challengerTeamOdds.toFixed(2) : ""}
               </button>
@@ -125,7 +125,7 @@ const FightDetails = ({
                   setBidModal(true),
                   setFighterName(fightDetails?.challenged?.name)
                 }}
-                disabled={!localStorage.getItem("username")}
+                disabled={!localStorage.getItem("username") || !isBiddingEnabled}
               >
                 {bids?.challengedTeamOdds !== undefined ? bids.challengedTeamOdds.toFixed(2) : ""}
               </button>

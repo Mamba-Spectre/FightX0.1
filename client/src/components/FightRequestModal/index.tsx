@@ -1,13 +1,17 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Modal from "../Modal";
 import s from "./FightRequestModal.module.scss";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import 'react-select-search/style.css'
+import "react-select-search/style.css";
 import SelectSearch, { SelectSearchOption } from "react-select-search";
+import versus from "../../../assets/versus.png";
 
-const FightRequestModal = ({modalOpen,closeModal}:{
+const FightRequestModal = ({
+  modalOpen,
+  closeModal,
+}: {
   modalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -21,11 +25,14 @@ const FightRequestModal = ({modalOpen,closeModal}:{
     try {
       if (query.length < 3) return [];
       setLoading(true);
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-        params: {
-          username: query,
-        },
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user`,
+        {
+          params: {
+            username: query,
+          },
+        }
+      );
       const newOptions = response?.data?.usernames?.map((user: object) => ({
         name: user,
         value: user,
@@ -41,7 +48,7 @@ const FightRequestModal = ({modalOpen,closeModal}:{
   };
   const handleSubmit = async () => {
     setLoading(true);
-    try{
+    try {
       const challenger = localStorage.getItem("username");
       const commonAuth = localStorage.getItem("common-auth");
       const payload = {
@@ -50,12 +57,16 @@ const FightRequestModal = ({modalOpen,closeModal}:{
         location,
         date,
       };
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/fights/registerFight`, payload , {
-        headers: {
-          "common-auth": commonAuth,
-        },
-      });
-    }catch(err:any){
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/fights/registerFight`,
+        payload,
+        {
+          headers: {
+            "common-auth": commonAuth,
+          },
+        }
+      );
+    } catch (err: any) {
       setLoading(false);
       toast.error(err?.response?.data?.message || "An error occurred", {
         position: "top-center",
@@ -68,7 +79,7 @@ const FightRequestModal = ({modalOpen,closeModal}:{
         theme: "dark",
       });
     }
-  }
+  };
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(event.target.value);
@@ -90,47 +101,54 @@ const FightRequestModal = ({modalOpen,closeModal}:{
             autoFocus
             className={s.selectSearch}
             search
-            onChange={(value:any) => {
+            onChange={(value: any) => {
               setChallengedUser(value);
             }}
             getOptions={getOptions}
           />
+          {challengedUser && (
+            <span className={s.versus}>
+              <p className={s.name}>{challengedUser}</p>
+              <img src={versus.src} />
+              <p className={s.name}>{localStorage.getItem("username")}</p>
+            </span>
+          )}
           <p>Date and Time</p>
-          <input 
-            className={s.input} 
-            type="datetime-local" 
-            placeholder="Enter date and time" 
-            value={date} 
-            onChange={handleDateChange} 
+          <input
+            className={s.input}
+            type="datetime-local"
+            placeholder="Enter date and time"
+            value={date}
+            onChange={handleDateChange}
           />
           <p>Location</p>
-          <input 
-            className={s.input} 
-            type="text" 
+          <input
+            className={s.input}
+            type="text"
             name="Location"
-            placeholder="Enter location" 
-            value={location} 
-            onChange={handleLocationChange} 
+            placeholder="Enter location"
+            value={location}
+            onChange={handleLocationChange}
           />
-          <button className={s.button} onClick={()=>handleSubmit()}>Submit</button>
+          <button className={s.button} onClick={() => handleSubmit()}>
+            Submit
+          </button>
         </div>
         <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Modal>
     </div>
   );
 };
 
 export default FightRequestModal;
-
-
