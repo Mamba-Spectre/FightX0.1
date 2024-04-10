@@ -8,15 +8,17 @@ const BidModal = ({
   onRequestClose,
   fightId,
   fighterName,
-  person
+  person,
+  odds
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   fightId: string;
   fighterName: string;
     person: string;
+  odds: string;
 }) => {
-  const [bid, setBid] = useState(0);
+  const [bid, setBid] = useState(1);
 
   const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBid(parseInt(e.target.value));
@@ -40,7 +42,7 @@ const BidModal = ({
       console.error(err);
     }
   };
-
+console.log(odds)
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <div className={s.root}>
@@ -50,8 +52,12 @@ const BidModal = ({
           placeholder="Enter your bid"
           value={bid}
           onChange={handleBidChange}
+          maxLength={4}
+          max={1000}
+          autoFocus
         />
-        <button onClick={sendBid}>Submit</button>
+        Expected Return: {(bid * Number(odds)).toFixed(2)}
+        <button onClick={sendBid}>Enter BID</button>
       </div>
     </Modal>
   );

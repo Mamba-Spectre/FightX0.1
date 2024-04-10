@@ -47,6 +47,7 @@ const FightDetails = ({
   const [bidModal, setBidModal] = useState(false);
   const [fighterName, setFighterName] = useState("");
   const [person,setPerson] = useState("")
+  const [odds,setOdds] = useState("")
   const [loading, setLoading] = useState(false);
   const [bids, setBids] = useState({
     challengerTeamOdds: 0,
@@ -109,6 +110,7 @@ const FightDetails = ({
               <button
                 onClick={() => {
                   setPerson("challenger"),
+                  setOdds(bids.challengerTeamOdds.toFixed(2)),
                   setBidModal(true),
                   setFighterName(fightDetails?.challenger?.name)
                 }}
@@ -119,6 +121,7 @@ const FightDetails = ({
               <button
                 onClick={() => {
                   setPerson("challenged"),
+                  setOdds(bids.challengedTeamOdds.toFixed(2)),
                   setBidModal(true),
                   setFighterName(fightDetails?.challenged?.name)
                 }}
@@ -130,7 +133,7 @@ const FightDetails = ({
           </div>
         </div>
       )}
-      {bidModal && <BidModal isOpen={bidModal} fightId={fightID} onRequestClose={() => {setBidModal(false),fetchBids()}} fighterName = {fighterName} person={person}/>}
+      {bidModal && <BidModal isOpen={bidModal} fightId={fightID} onRequestClose={() => {setBidModal(false),fetchBids()}} fighterName = {fighterName} person={person} odds={odds}/>}
     </Modal>
   );
 };

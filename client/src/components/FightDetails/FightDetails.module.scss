@@ -48,9 +48,23 @@
             padding: 4px;
             border-radius: 8px;
             color: black;
+            position: relative;
         }
         button:disabled{
             background-color: grey;
+        }
+        .challengerInput{
+          position: absolute;
+          left: -5px;
+          cursor: pointer;
+          border-radius: 8px;
+          background-color: rgb(143, 121, 92);
+
+          &:hover {
+            background-color: #f0f0f0;
+          }
+          bottom: 10px;
+
         }
     }
   }

@@ -1,0 +1,50 @@
+.root{
+    .loader{
+        width: 800px;
+        height: 350px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .details{
+        width: 800px;
+        img{
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            box-shadow: 0px 0px 10px 0px black;
+        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+        .userDetails{
+            span{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: bold;
+                p{
+                    color: hsl(0, 0%, 75%);
+                    font-size: large;
+                    
+                }
+            }
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            .userName{
+                margin-left: -56px;
+            }
+            .fullname{
+                margin-left: -12px;
+            }
+            .email{
+                margin-left: -12px;
+            }
+            .winning{
+                margin-left: -56px;
+            }
+        }
+    }
+}

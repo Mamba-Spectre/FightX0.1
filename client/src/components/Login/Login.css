@@ -71,6 +71,10 @@
 .auth-button:hover {
   background-color: #0056b3;
 }
+.auth-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
 .auth-form .switch-form {
   text-align: center;

@@ -63,8 +63,8 @@ export const getFightBiddingOdds = async (req: express.Request, res: express.Res
     const adjustedImpliedProbabilityChallenger = impliedProbabilityChallenger * (1 - bookmakerEdge);
     const adjustedImpliedProbabilityChallenged = impliedProbabilityChallenged * (1 - bookmakerEdge);
 
-    const challengerTeamOdds = 1 / adjustedImpliedProbabilityChallenger;
-    const challengedTeamOdds = 1 / adjustedImpliedProbabilityChallenged;
+    const challengerTeamOdds = 1 / adjustedImpliedProbabilityChallenged;
+    const challengedTeamOdds = 1 / adjustedImpliedProbabilityChallenger;
 
     // const stake = 1;
 

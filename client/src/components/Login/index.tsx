@@ -7,7 +7,6 @@ import Modal from "../Modal";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 import { UploadButton } from "../../utils/uploadthing";
-import { set } from "react-hook-form";
 
 const Login = ({
   modalOpen,
@@ -44,11 +43,12 @@ const Login = ({
           localStorage.setItem("username", response?.data?.username);
           localStorage.setItem("profilePicture", response?.data?.profilePicture);
         }
+        setLoading(false);
         window.location.reload();
-        closeModal();
 
       }
       else{
+        setLoading(true);
         const authData = {
           email,
           password,
@@ -78,7 +78,7 @@ const Login = ({
           progress: undefined,
           theme: "dark",
         });
-      
+      setLoading(false);
       }
     } catch (err: any) {
       setLoading(false);
@@ -148,7 +148,6 @@ const Login = ({
                 className="upload-button"
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
-                  console.log("Files: ", res[0].url);
                   setProfilePicture(res[0].url);
                 }}
                 onUploadError={(error: Error) => {
@@ -166,7 +165,7 @@ const Login = ({
             <>
               Don't have an account?{" "}
               <p
-                style={{ textDecoration: "underline" }}
+                style={{ textDecoration: "underline",cursor:"pointer" }}
                 onClick={() => setLoginSignup("signup")}
               >
                 Register

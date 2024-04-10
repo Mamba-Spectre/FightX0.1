@@ -11,6 +11,7 @@ import Login from "../Login";
 import Loader from "../Loader";
 import RequestsModal from "../RequestsModal";
 import FightDetails from "../FightDetails";
+import UserModal from "../UserDetailsModal";
 
 interface UserData {
   username: string;
@@ -26,6 +27,7 @@ const HomePage = () => {
   const [fightDetailsModal, setFightDetailsModal] = useState(false);
   const [requestsModal, setRequestsModal] = useState(false);
   const [fightID, setFightID] = useState("");
+  const[userModal, setUserModal] = useState(false)
   const [userData, setUserData] = useState<UserData>({
     username: "",
     profilePicture: "",
@@ -81,7 +83,6 @@ const HomePage = () => {
   useEffect(() => {
     getForums();
     getUserData();
-    debugger;
   }, []);
 
   return (
@@ -154,7 +155,7 @@ const HomePage = () => {
                   )}
                   {userButtonClicked && (
                     <div className={s.userDropdown}>
-                      <button>View Personal Details</button>
+                      <button onClick={()=>{setUserModal(true), setUserButtonClicked(false)}}>View Personal Details</button>
                       <button
                         onClick={() => {
                           localStorage.clear();
@@ -238,6 +239,12 @@ const HomePage = () => {
                   closeModal={() => setFightDetailsModal(false)}
                   fightID={fightID}
                   />
+              )}
+              {userModal && (
+                <UserModal
+                  modalOpen={userModal}
+                  closeModal={() => setUserModal(false)}
+                />
               )}
             </div>
           </>
