@@ -65,11 +65,6 @@ export const getFightBiddingOdds = async (req: express.Request, res: express.Res
 
     const challengerTeamOdds = 1 / adjustedImpliedProbabilityChallenged;
     const challengedTeamOdds = 1 / adjustedImpliedProbabilityChallenger;
-
-    // const stake = 1;
-
-    // const payoutTeam1 = challengerTeamOdds * stake;
-    // const payoutTeam2 = challengedTeamOdds * stake;
     res.status(200).send({ challengedTeamOdds, challengerTeamOdds }).end();
 }
 
