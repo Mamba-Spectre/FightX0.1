@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const WalletTransactionSchema = new mongoose.Schema({
   username: { type: String, required: false },
   totalBalance: { type: Number, required: true, default: 0},
+  transactionRequests: {type: Boolean, required: false, default: false},
   transactions: [
     {
       amount: { type: Number, required: true },
@@ -36,8 +37,9 @@ export const WalletTransactionModel = mongoose.model(
 export const getWalletTransactions = () => WalletTransactionModel.find();
 export const getWalletTransactionById = (id: string) =>
   WalletTransactionModel.findById(id);
+export const getWalletTransactionByUsername = (username: string) => WalletTransactionModel.find({ username });
 export const createWalletTransaction = (values: Record<string, any>) => new WalletTransactionModel(values).save().then((transaction) => transaction.toObject());
 export const deleteWalletTransactionById = (id: string) =>
   WalletTransactionModel.findOneAndDelete({ _id: id });
 export const updateWalletTransactionById = (id: string, values: Record<string, any>) =>
-  WalletTransactionModel.findByIdAndUpdate(id, values);
+  WalletTransactionModel.findByIdAndUpdate(id, values); 

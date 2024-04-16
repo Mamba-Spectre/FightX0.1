@@ -15,7 +15,7 @@ interface IUser {
 }
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
-  username: { type: String, required: true },
+  username: { type: String, required: true, unique: true},
   fullname: { type: String, required: true },
   totalWinning: { type: Number, required: true, default: 0 },
   isBlackListed: { type: Boolean, required: true, default: false },
