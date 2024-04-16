@@ -35,6 +35,7 @@ export const WalletTransactionModel = mongoose.model(
 );
 
 export const getWalletTransactions = () => WalletTransactionModel.find();
+export const getWalletTransactionsRequests = () => WalletTransactionModel.find({ transactionRequests: true });
 export const getWalletTransactionById = (id: string) =>
   WalletTransactionModel.findById(id);
 export const getWalletTransactionByUsername = (username: string) => WalletTransactionModel.find({ username });
@@ -43,3 +44,5 @@ export const deleteWalletTransactionById = (id: string) =>
   WalletTransactionModel.findOneAndDelete({ _id: id });
 export const updateWalletTransactionById = (id: string, values: Record<string, any>) =>
   WalletTransactionModel.findByIdAndUpdate(id, values); 
+//   export const getTransactionByIdFromTransactions = (transactionId: string) =>
+//   WalletTransactionModel.findOne({ 'transactions._id': transactionId }, { 'transactions.$': 1 });
