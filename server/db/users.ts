@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
   fullname: { type: String, required: true },
   totalWinning: { type: Number, required: true, default: 0 },
   isBlackListed: { type: Boolean, required: true, default: false },
+  walletBalance: { type: Number, required: true, default: 0 },
   profilePicture: { type: String, required: true, default: ""},
   authentication: {
     password: { type: String, required: false, select: false },

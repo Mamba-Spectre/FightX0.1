@@ -9,16 +9,17 @@ const BidModal = ({
   fightId,
   fighterName,
   person,
-  odds
+  odds,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   fightId: string;
   fighterName: string;
-    person: string;
+  person: string;
   odds: string;
 }) => {
   const [bid, setBid] = useState(1);
+  const [qrCode, setQrCode] = useState(null);
 
   const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBid(parseInt(e.target.value));
@@ -27,9 +28,9 @@ const BidModal = ({
   const sendBid = async () => {
     const username = localStorage.getItem("username");
     try {
-      await axios.post(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/bids/registerBid`,
-        { fighter: fighterName, amount: bid,person: person },
+        { fighter: fighterName, amount: bid, person: person },
         {
           params: {
             username,
@@ -37,15 +38,30 @@ const BidModal = ({
           },
         }
       );
-      onRequestClose();
+      setQrCode(response.data.qrCode);
+      console.log("Bid registered", response.data);
+      // onRequestClose();
     } catch (err) {
       console.error(err);
     }
   };
-console.log(odds)
+  const paymentMade = async () => {
+    
+  }
+
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <div className={s.root}>
+        {qrCode ?(<>
+          <h4>Scan the QR code to complete the payment</h4>
+        <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />
+        <div className={s.qrButtons}>
+          <button onClick={()=>onRequestClose()} className={s.cancelButton}>Cancel</button>
+          <button onClick={()=>paymentMade()} className={s.successButton}>Paid</button>
+        </div>
+        </>
+        ):(
+        <>
         <h4>BID on {fighterName}</h4>
         <input
           type="number"
@@ -58,6 +74,8 @@ console.log(odds)
         />
         Expected Return: {(bid * Number(odds)).toFixed(2)}
         <button onClick={sendBid}>Enter BID</button>
+        </>
+        )}
       </div>
     </Modal>
   );
