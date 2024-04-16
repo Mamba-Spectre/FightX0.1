@@ -75,7 +75,6 @@ const FightDetails = ({
       setLoading(false);
     }catch(err:any){
       setLoading(false);
-      console.log(err);
     }
   }
   const currentTime = dayjs();
