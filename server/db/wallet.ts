@@ -1,26 +1,43 @@
 import mongoose from "mongoose";
 
-interface IWalletTransaction {
-    user: string;
-    amount: number;
-    credit: boolean;
-    timestamp: Date;
-    totalBalance: number;
-    }
-
 const WalletTransactionSchema = new mongoose.Schema({
-    user: { type: String, required: true },
-    amount: { type: Number, required: true },
-    credit: { type: Boolean, required: true },
-    timestamp: { type: Date, default: Date.now },
-    totalBalance: { type: Number, required: true }
+  username: { type: String, required: false },
+  totalBalance: { type: Number, required: true, default: 0},
+  transactions: [
+    {
+      amount: { type: Number, required: true },
+    },
+    {
+      credit: { type: Boolean, required: false },
+    },
+    {
+      debit: { type: Boolean, required: false },
+    },
+    {
+      fightId: { type: String, required: false },
+    },
+    {
+      timestamp: { type: Date, default: Date.now },
+    },
+    {
+      isMarked: { type: Boolean, required: false },
+    },
+    {
+      transactionAccepted: { type: Boolean, required: false },
+    },
+  ],
 });
 
-const MoneyTransferSchema = new mongoose.Schema({
-    sender: { type: String, required: true },
-    amount: { type: Number, required: true },
-    timestamp: { type: Date, default: Date.now }
-});
+export const WalletTransactionModel = mongoose.model(
+  "WalletTransaction",
+  WalletTransactionSchema
+);
 
-export const WalletTransactionModel = mongoose.model("WalletTransaction", WalletTransactionSchema);
-
+export const getWalletTransactions = () => WalletTransactionModel.find();
+export const getWalletTransactionById = (id: string) =>
+  WalletTransactionModel.findById(id);
+export const createWalletTransaction = (values: Record<string, any>) => new WalletTransactionModel(values).save().then((transaction) => transaction.toObject());
+export const deleteWalletTransactionById = (id: string) =>
+  WalletTransactionModel.findOneAndDelete({ _id: id });
+export const updateWalletTransactionById = (id: string, values: Record<string, any>) =>
+  WalletTransactionModel.findByIdAndUpdate(id, values);
