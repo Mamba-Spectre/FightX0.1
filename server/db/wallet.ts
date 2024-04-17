@@ -9,6 +9,9 @@ const WalletTransactionSchema = new mongoose.Schema({
       amount: { type: Number, required: true },
     },
     {
+      UPItransactionID: { type: String, required: false },
+    },
+    {
       credit: { type: Boolean, required: false },
     },
     {
@@ -26,6 +29,9 @@ const WalletTransactionSchema = new mongoose.Schema({
     {
       transactionAccepted: { type: Boolean, required: false },
     },
+    {
+      description: { type: String, required: false },
+    }
   ],
 });
 
@@ -44,5 +50,8 @@ export const deleteWalletTransactionById = (id: string) =>
   WalletTransactionModel.findOneAndDelete({ _id: id });
 export const updateWalletTransactionById = (id: string, values: Record<string, any>) =>
   WalletTransactionModel.findByIdAndUpdate(id, values); 
-//   export const getTransactionByIdFromTransactions = (transactionId: string) =>
-//   WalletTransactionModel.findOne({ 'transactions._id': transactionId }, { 'transactions.$': 1 });
+  // export const getTransactionByIdFromTransactions = (transactionId: string) =>
+  // WalletTransactionModel.findOne({ 'transactions._id': transactionId }, { 'transactions.$': 1 });
+export const getSubTransactionById = (id: string) =>
+  WalletTransactionModel.findById(id);
+  export const getUnmarkedWalletTransactions = () => WalletTransactionModel.find({ 'transactions.isMarked': false });

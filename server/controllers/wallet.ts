@@ -3,7 +3,11 @@ import {
   getWalletTransactions,
   getWalletTransactionByUsername,
   getWalletTransactionsRequests,
+  createWalletTransaction,
+  WalletTransactionModel,
+  getUnmarkedWalletTransactions
 } from "../db/wallet";
+import { updateUserByUsername } from "../db/users";
 
 export const getWalletTransaction = async (
   req: express.Request,
@@ -12,6 +16,52 @@ export const getWalletTransaction = async (
   const walletTransactions = await getWalletTransactions();
   res.status(200).send({ walletTransactions }).end();
 };
+
+export const acceptOrRejectTransaction = async ( req: express.Request, res: express.Response) => {
+  const { username, transactionId, verdict } = req.body;
+  if(!username || !transactionId || verdict === undefined){
+    return res.status(400).send({ message: "Username, transaction ID and accept are required" });
+  }
+  try {
+    const walletTransaction:any = await getWalletTransactionByUsername(username);
+    if(!walletTransaction){
+      return res.status(404).send({ message: "User not found" });
+    }
+    const transaction = walletTransaction.transactions.find((transaction:any) => transaction._id == transactionId);
+    if(!transaction){
+      return res.status(404).send({ message: "Transaction not found" });
+    }
+    if(transaction.transactionAccepted){
+      return res.status(400).send({ message: "Transaction already accepted" });
+    }
+    if(verdict === true){
+      transaction.transactionAccepted = true;
+      transaction.isMarked = true;
+      walletTransaction.totalBalance += transaction.amount;
+      transaction.credit = true;
+      await updateUserByUsername(username, { walletBalance: walletTransaction.totalBalance }); 
+    }
+    else{
+      transaction.isMarked = true;
+    }
+    await walletTransaction.save();
+    res.status(200).send({ message: "Transaction updated successfully" }).end();
+  } catch (error) {
+    console.error("Error accepting or rejecting transaction:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+
+}
+
+export const getUnmarkedTransactions = async ( req: express.Request, res: express.Response) => {
+  try{
+    const unmarkedTransactions = await getUnmarkedWalletTransactions();
+    res.status(200).send({ unmarkedTransactions }).end();
+  }
+  catch{
+    res.status(500).send({ message: "Internal server error" });
+  }
+}
 
 export const walletTransactionByUsername = async (
   req: express.Request,
@@ -39,29 +89,25 @@ export const getTransactionRequests = async (
   }
 };
 
-export const approveOrRejectTransaction = async ( req: express.Request, res: express.Response) => {
-    const { subTransactionId, transactionResult } = req.body;
-    if (!subTransactionId) {
-        return res.status(400).send({ message: "Transaction ID is required" });
+export const createPaymentRequest = async (req: express.Request, res: express.Response) => {
+   const { username, amount, UPItransactionID } = req.body;
+    if(!username || !amount || !UPItransactionID){
+        return res.status(400).send({ message: "Username, amount and UPI transaction ID are required" });
     }
     try {
-        const transaction = await getWalletTransactionById(transactionId);
-        if (!transaction) {
-        return res.status(404).send({ message: "Transaction not found" });
+        if(amount < 0){
+            return res.status(400).send({ message: "Amount cannot be negative" });
         }
-        if (!isMarked) {
-        transaction.isMarked = isMarked;
-        if (transactionAccepted) {
-        transaction.transactionAccepted = transactionAccepted;
-        }
+        const walletTransaction:any = await getWalletTransactionByUsername(username);
+        if(!walletTransaction){
+            await createWalletTransaction({ username, transactionRequests: true, transactions: [{ amount, UPItransactionID, credit: false, debit: true, timestamp: new Date(), isMarked: false, transactionAccepted: false }] });
         }
         else{
-            res.status(400).send({ message: "Transaction already marked" });
+            walletTransaction.transactions.push({ amount, UPItransactionID, credit: false, debit: true, timestamp: new Date(), isMarked: false, transactionAccepted: false });
+            await walletTransaction.save();
         }
-        await transaction.save();
-        res.status(200).send({ message: "Transaction updated", updatedTransaction: transaction }).end();
     } catch (error) {
-        console.error("Error updating transaction:", error);
+        console.error("Error creating payment request:", error);
         res.status(500).send({ message: "Internal server error" });
     }
-    };
+}

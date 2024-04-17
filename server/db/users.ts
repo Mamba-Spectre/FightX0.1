@@ -41,3 +41,5 @@ export const deleteUserById = (id: string) =>
   UserModel.findOneAndDelete({ _id: id });
 export const updateUserById = (id: string, values: Record<string, any>) =>
   UserModel.findByIdAndUpdate(id, values);
+  export const updateUserByUsername = (username: string, values: Record<string, any>) => UserModel.findOne({ username }).then((user) => { user.set(values); return user.save(); } );
+  export const getUserTotalBalance = (username: string) => UserModel.findOne({ username }).then((user) => user.walletBalance);
