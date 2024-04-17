@@ -1,7 +1,7 @@
 import express from 'express';
 import { BidModal, createBid } from '../db/biding';
 import { FightModal } from '../db/fight';
-import { getUserTotalBalance } from '../db/users';
+import { getUserTotalBalance, updateUserByUsername } from '../db/users';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
     const { username,fightId,person } = req.query;
@@ -21,6 +21,9 @@ export const registerBid = async (req: express.Request, res: express.Response) =
             amount,
             bidder:username,
         });
+        await updateUserByUsername(username.toString(), { walletBalance: getTotalBalance - amount });
+        console.log('Bid registered',getTotalBalance,amount);
+        
     }
     // const qrCode = await axios.get("https://quickchart.io/qr",{
     //     params:{

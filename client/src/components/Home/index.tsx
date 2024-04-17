@@ -16,6 +16,7 @@ import UserModal from "../UserDetailsModal";
 interface UserData {
   username: string;
   profilePicture: string;
+  walletBalance: number;
 }
 
 const HomePage = () => {
@@ -31,6 +32,7 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData>({
     username: "",
     profilePicture: "",
+    walletBalance: 0,
   });
   const [userButtonClicked, setUserButtonClicked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -72,11 +74,19 @@ const HomePage = () => {
 
     return reversedGroupedForums;
   };
-  const getUserData = () => {
+  const getUserData = async () => {
     const username = localStorage.getItem("username");
     const profilePicture = localStorage.getItem("profilePicture");
     if (username && profilePicture) {
-      setUserData({ username, profilePicture });
+      const walletBalance:any = await axios.get(`http://localhost:8080/user/details`, {
+        params: {
+          username,
+        },
+      });
+      const data = walletBalance.data.user.walletBalance
+      setUserData({ username, profilePicture, walletBalance: data});
+      console.log("wallet", userData.walletBalance);
+      // setUserData({ username, profilePicture });
     }
   };
 
@@ -132,9 +142,13 @@ const HomePage = () => {
                 <button className={s.navbarButton} disabled>
                   Forums
                 </button>
+
                 <span className={s.userButtons}>
                   {userData?.username ? (
                     <>
+                          <h2>
+                            {userData.walletBalance}
+                          </h2>
                       <img
                         onClick={() =>
                           setUserButtonClicked((prevState) => !prevState)
@@ -142,9 +156,10 @@ const HomePage = () => {
                         className={s.profilePicture}
                         src={userData?.profilePicture}
                         alt=""
-                      />
+                        />
                     </>
                   ) : (
+                    <>
                     <img
                       onClick={() => {
                         setLoginModalOpen(true);
@@ -152,6 +167,7 @@ const HomePage = () => {
                       src={enter.src}
                       alt="Enter"
                     />
+                    </>
                   )}
                   {userButtonClicked && (
                     <div className={s.userDropdown}>

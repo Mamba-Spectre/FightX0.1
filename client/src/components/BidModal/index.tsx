@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "../Modal";
 import axios from "axios";
 import s from "./BidModal.module.scss";
+import { ToastContainer, toast } from "react-toastify";
 
 const BidModal = ({
   isOpen,
@@ -20,6 +21,7 @@ const BidModal = ({
 }) => {
   const [bid, setBid] = useState(1);
   const [qrCode, setQrCode] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBid(parseInt(e.target.value));
@@ -41,7 +43,17 @@ const BidModal = ({
       setQrCode(response.data.qrCode);
       console.log("Bid registered", response.data);
       // onRequestClose();
-    } catch (err) {
+    } catch (err:any) {
+      toast.error(err?.response?.data?.message || "An error occurred", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       console.error(err);
     }
   };
@@ -52,16 +64,7 @@ const BidModal = ({
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <div className={s.root}>
-        {qrCode ?(<>
-          <h4>Scan the QR code to complete the payment</h4>
-        <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />
-        <div className={s.qrButtons}>
-          <button onClick={()=>onRequestClose()} className={s.cancelButton}>Cancel</button>
-          <button onClick={()=>paymentMade()} className={s.successButton}>Paid</button>
-        </div>
-        </>
-        ):(
-        <>
+
         <h4>BID on {fighterName}</h4>
         <input
           type="number"
@@ -74,9 +77,19 @@ const BidModal = ({
         />
         Expected Return: {(bid * Number(odds)).toFixed(2)}
         <button onClick={sendBid}>Enter BID</button>
-        </>
-        )}
       </div>
+      <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
     </Modal>
   );
 };
