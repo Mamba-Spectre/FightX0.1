@@ -24,12 +24,11 @@ const WalletModal = ({
         },
       }
     );
-    console.log("Wallet Data", response.data);
+    console.log("Wallet Data", response?.data?.walletTransactions[0]);
   };
 
 
   useEffect(() => {
-    console.log("WalletModal mounted");
     fetchWalletData();
   }, []);
 

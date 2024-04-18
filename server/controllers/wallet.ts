@@ -133,49 +133,37 @@ export const createPaymentRequest = async (
       message: "Username, amount, and UPI transaction ID are required",
     });
   }
+  if (amount < 0) {
+    return res.status(400).send({ message: "Amount cannot be negative" });
+  }
 
   try {
-    if (amount < 0) {
-      return res.status(400).send({ message: "Amount cannot be negative" });
-    }
 
-    let walletTransaction:any = await getWalletTransactionByUsername(username);
-    console.log(walletTransaction);
-    if (walletTransaction.length === 0) {
+    let walletTransactions:any = await getWalletTransactionByUsername(username);
+    console.log(walletTransactions);
+    const transactionsData = {
+      amount,
+      UPItransactionID,
+      credit: true,
+      debit: false,
+      timestamp: new Date(),
+      isMarked: false,
+      transactionAccepted: false,
+    };
+    if (!walletTransactions) {
       console.log("here");
       
       await createWalletTransaction({
         username,
         transactionRequests: true,
         transactions: [
-          {
-            amount,
-            UPItransactionID,
-            credit: false,
-            debit: true,
-            timestamp: new Date(),
-            isMarked: false,
-            transactionAccepted: false,
-          },
+transactionsData
         ],
       });
     } else {
-      // Ensure walletTransaction is a Mongoose document
-      // walletTransaction = Array.isArray(walletTransaction) ? walletTransaction[0] : walletTransaction;
-
-      // Push new transaction to existing wallet transaction
-      walletTransaction[0].transactions.push({
-        amount,
-        UPItransactionID,
-        credit: false,
-        debit: true,
-        timestamp: new Date(),
-        isMarked: false,
-        transactionAccepted: false,
-      });
-
-      // Save the updated wallet transaction
-      await walletTransaction[0].save();
+      walletTransactions.transactions.push(transactionsData);
+      walletTransactions.transactionRequests = true;
+      await walletTransactions.save();
     }
 
     res.status(200).send({ message: "Payment request created successfully" });

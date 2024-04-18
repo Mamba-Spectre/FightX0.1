@@ -9,13 +9,13 @@ const WalletTransactionSchema = new mongoose.Schema({
       amount: { type: Number, required: true },
     },
     {
-      UPItransactionID: { type: String, required: false },
+      UPItransactionID: { type: String },
     },
     {
-      credit: { type: Boolean, required: false },
+      credit: { type: Boolean, required: false,default: false},
     },
     {
-      debit: { type: Boolean, required: false },
+      debit: { type: Boolean, required: false,default: false},
     },
     {
       fightId: { type: String, required: false },
@@ -24,10 +24,10 @@ const WalletTransactionSchema = new mongoose.Schema({
       timestamp: { type: Date, default: Date.now },
     },
     {
-      isMarked: { type: Boolean, required: false },
+      isMarked: { type: Boolean, required: false, default: false},
     },
     {
-      transactionAccepted: { type: Boolean, required: false },
+      transactionAccepted: { type: Boolean, required: false, default: false},
     },
     {
       description: { type: String, required: false },
@@ -44,7 +44,7 @@ export const getWalletTransactions = () => WalletTransactionModel.find();
 export const getWalletTransactionsRequests = () => WalletTransactionModel.find({ transactionRequests: true });
 export const getWalletTransactionById = (id: string) =>
   WalletTransactionModel.findById(id);
-export const getWalletTransactionByUsername = (username: string) => WalletTransactionModel.find({ username });
+export const getWalletTransactionByUsername = (username: string) => WalletTransactionModel.findOne({ username });
 export const createWalletTransaction = (values: Record<string, any>) => new WalletTransactionModel(values).save().then((transaction) => transaction.toObject());
 export const deleteWalletTransactionById = (id: string) =>
   WalletTransactionModel.findOneAndDelete({ _id: id });
