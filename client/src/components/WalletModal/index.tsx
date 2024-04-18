@@ -26,7 +26,7 @@ const WalletModal = ({
       }
     );
     const reversedTransactions =
-      response?.data.walletTransactions.transactions.reverse();
+      response?.data?.walletTransactions?.transactions?.reverse();
     setWalletData(reversedTransactions);
     console.log(reversedTransactions);
   };
@@ -40,35 +40,43 @@ const WalletModal = ({
       <div className={s.root}>
         <div className={s.title}>Wallet Transactions</div>
         <div className={s.body}>
-          {walletData.map((item: any, index) => {
-            return (
-              <div key={index} className={`${s.transaction} ${item.debit ? s.debitTransaction : ''}`}>
-                <div className={s.transactionDetails}>
-                  <div className={s.transactionAmount}>
-                    {item.amount}
-                    {item.debit && <span> on <span className={s.fighterName}>{item?.fighterName}</span> at {dayjs(item.timestamp).format('YYYY-MM-DD HH:mm:ss')}</span>}
-                    {item.credit && (
-                      <span>
-                        to Wallet on{" "}
-                        {new Date(item.timestamp).toLocaleDateString()}
-                      </span>
+          {!walletData ? (
+            <div className={s.noData}>
+              No transactions found. Start by adding money to your wallet!
+            </div>
+            ):(
+              <>
+              {walletData.map((item: any, index) => {
+                return (
+                  <div key={index} className={`${s.transaction} ${item.debit ? s.debitTransaction : ''}`}>
+                    <div className={s.transactionDetails}>
+                      <div className={s.transactionAmount}>
+                        {item.amount}
+                        {item.debit && <span> on <span className={s.fighterName}>{item?.fighterName}</span> at {dayjs(item.timestamp).format('YYYY-MM-DD HH:mm:ss')}</span>}
+                        {item.credit && (
+                          <span>
+                            to Wallet on{" "}
+                            {new Date(item.timestamp).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                      <div className={s.transactionDate}>
+                        {item.UPItransactionID && (
+                          <span>UPI Transaction ID: {item.UPItransactionID}</span>
+                        )}
+                        {item.fightId && <span>Fight ID: {item.fightId}</span>}
+                      </div>
+                    </div>
+                    {!item.isMarked ? (
+                      <div className={s.transactionStatus}>Approval Pending</div>
+                    ) : (
+                      <div className={s.transactionStatusApproved}>Approved</div>
                     )}
                   </div>
-                  <div className={s.transactionDate}>
-                    {item.UPItransactionID && (
-                      <span>UPI Transaction ID: {item.UPItransactionID}</span>
-                    )}
-                    {item.fightId && <span>Fight ID: {item.fightId}</span>}
-                  </div>
-                </div>
-                {!item.isMarked ? (
-                  <div className={s.transactionStatus}>Approval Pending</div>
-                ) : (
-                  <div className={s.transactionStatusApproved}>Approved</div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+              </>
+              )}
         </div>
         <div className={s.footer}>
           <div className={s.buttons} onClick={() => setMoneyModal(true)}>

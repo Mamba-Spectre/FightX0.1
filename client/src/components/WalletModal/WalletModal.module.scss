@@ -17,7 +17,18 @@
         top: 50px;
         width: 100%;
         height: 600px;
+        text-overflow: hidden;
         overflow-y: scroll;
+        .noData{
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #949494;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
         .transaction{
             background-color: #dfdfdf;
             color: #000000;
