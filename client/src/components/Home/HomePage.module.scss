@@ -72,12 +72,23 @@
     }
     .userButtons {
       display: flex;
-      gap: 4px;
+      gap: 12px;
       align-items: center;
       justify-content: center;
       padding: 0px 18px;
       margin-left: auto;
       position: relative;
+      .wallet{
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        img{
+          width: 24px;
+          height: 24px;
+        }
+      }
       .profilePicture {
         border-radius: 50%;
       }

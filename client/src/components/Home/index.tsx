@@ -12,6 +12,8 @@ import Loader from "../Loader";
 import RequestsModal from "../RequestsModal";
 import FightDetails from "../FightDetails";
 import UserModal from "../UserDetailsModal";
+import Cash from "../../../assets/cash.png";
+import WalletModal from "../WalletModal";
 
 interface UserData {
   username: string;
@@ -24,11 +26,12 @@ const HomePage = () => {
   const [forums, setForums] = useState([]);
   const [fights, setFights] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [walletModal, setWalletModal] = useState(false);
   const [fightChallengeModal, setFightChallengeModal] = useState(false);
   const [fightDetailsModal, setFightDetailsModal] = useState(false);
   const [requestsModal, setRequestsModal] = useState(false);
   const [fightID, setFightID] = useState("");
-  const[userModal, setUserModal] = useState(false)
+  const [userModal, setUserModal] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     username: "",
     profilePicture: "",
@@ -78,13 +81,16 @@ const HomePage = () => {
     const username = localStorage.getItem("username");
     const profilePicture = localStorage.getItem("profilePicture");
     if (username && profilePicture) {
-      const walletBalance:any = await axios.get(`http://localhost:8080/user/details`, {
-        params: {
-          username,
-        },
-      });
-      const data = walletBalance.data.user.walletBalance
-      setUserData({ username, profilePicture, walletBalance: data});
+      const walletBalance: any = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/details`,
+        {
+          params: {
+            username,
+          },
+        }
+      );
+      const data = walletBalance.data.user.walletBalance;
+      setUserData({ username, profilePicture, walletBalance: data });
       console.log("wallet", userData.walletBalance);
       // setUserData({ username, profilePicture });
     }
@@ -143,12 +149,13 @@ const HomePage = () => {
                   Forums
                 </button>
 
-                <span className={s.userButtons}>
+                <div className={s.userButtons}>
                   {userData?.username ? (
                     <>
-                          <h2>
-                            {userData.walletBalance}
-                          </h2>
+                      <div className={s.wallet} onClick={()=> setWalletModal(true)}>
+                        <img src={Cash.src} />
+                       {userData.walletBalance}
+                      </div>
                       <img
                         onClick={() =>
                           setUserButtonClicked((prevState) => !prevState)
@@ -156,22 +163,28 @@ const HomePage = () => {
                         className={s.profilePicture}
                         src={userData?.profilePicture}
                         alt=""
-                        />
+                      />
                     </>
                   ) : (
                     <>
-                    <img
-                      onClick={() => {
-                        setLoginModalOpen(true);
-                      }}
-                      src={enter.src}
-                      alt="Enter"
-                    />
+                      <img
+                        onClick={() => {
+                          setLoginModalOpen(true);
+                        }}
+                        src={enter.src}
+                        alt="Enter"
+                      />
                     </>
                   )}
                   {userButtonClicked && (
                     <div className={s.userDropdown}>
-                      <button onClick={()=>{setUserModal(true), setUserButtonClicked(false)}}>View Personal Details</button>
+                      <button
+                        onClick={() => {
+                          setUserModal(true), setUserButtonClicked(false);
+                        }}
+                      >
+                        View Personal Details
+                      </button>
                       <button
                         onClick={() => {
                           localStorage.clear();
@@ -182,7 +195,7 @@ const HomePage = () => {
                       </button>
                     </div>
                   )}
-                </span>
+                </div>
               </div>
             </div>
             <div className={s.body}>
@@ -210,7 +223,13 @@ const HomePage = () => {
                   Matches
                 </p>
                 {fights.map((fight: any) => (
-                  <div key={fight?._id} className={s.match} onClick={()=>{setFightDetailsModal(true),setFightID(fight._id)}}>
+                  <div
+                    key={fight?._id}
+                    className={s.match}
+                    onClick={() => {
+                      setFightDetailsModal(true), setFightID(fight._id);
+                    }}
+                  >
                     <p className={s.versus}>
                       {fight?.challenger?.name}
                       <img
@@ -254,12 +273,18 @@ const HomePage = () => {
                   modalOpen={fightDetailsModal}
                   closeModal={() => setFightDetailsModal(false)}
                   fightID={fightID}
-                  />
+                />
               )}
               {userModal && (
                 <UserModal
                   modalOpen={userModal}
                   closeModal={() => setUserModal(false)}
+                />
+              )}
+              {walletModal && (
+                <WalletModal
+                  modalOpen={walletModal}
+                  closeModal={() => setWalletModal(false)}
                 />
               )}
             </div>
