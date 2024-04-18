@@ -1,5 +1,5 @@
 .root{
-    width: 500px;
+    width: 550px;
     height: 700px;
     position: relative;
     .title{
@@ -16,7 +16,39 @@
         position: absolute;
         top: 50px;
         width: 100%;
-        
+        height: 600px;
+        overflow-y: scroll;
+        .transaction{
+            background-color: #dfdfdf;
+            color: #000000;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            .transactionDetails{
+                .transactionAmount{
+                    .fighterName{
+                        font-size: 18px;
+                        font-weight: 500;
+                        color: #12b4ff;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .transactionStatus{
+                color: #949494;
+            }
+            .transactionStatusApproved{
+                color: #43b388;
+            }
+        }
+        .debitTransaction{
+            background-color: #47504a;
+            color: #dbdbdb;
+        }
 
     }
     .footer{

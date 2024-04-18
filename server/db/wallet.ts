@@ -4,34 +4,31 @@ const WalletTransactionSchema = new mongoose.Schema({
   username: { type: String, required: false },
   totalBalance: { type: Number, required: true, default: 0},
   transactionRequests: {type: Boolean, required: false, default: false},
-  transactions: [
-    {
-      amount: { type: Number, required: true },
-    },
-    {
-      UPItransactionID: { type: String },
-    },
-    {
-      credit: { type: Boolean, required: false,default: false},
-    },
-    {
-      debit: { type: Boolean, required: false,default: false},
-    },
-    {
-      fightId: { type: String, required: false },
-    },
-    {
-      timestamp: { type: Date, default: Date.now },
-    },
-    {
-      isMarked: { type: Boolean, required: false, default: false},
-    },
-    {
-      transactionAccepted: { type: Boolean, required: false, default: false},
-    },
-    {
-      description: { type: String, required: false },
-    }
+  transactions: [{
+    amount: { type: Number, required: true },
+  
+  
+    UPItransactionID: { type: String },
+  
+  
+    credit: { type: Boolean, required: false,default: false},
+  
+  
+    debit: { type: Boolean, required: false,default: false},
+  
+    fighterName: { type: String, required: false },
+    fightId: { type: String, required: false },
+  
+    timestamp: { type: Date, default: Date.now },
+  
+    isMarked: { type: Boolean, required: false, default: false},
+  
+    transactionAccepted: { type: Boolean, required: false, default: false},
+  
+    description: { type: String, required: false },
+
+  }
+
   ],
 });
 

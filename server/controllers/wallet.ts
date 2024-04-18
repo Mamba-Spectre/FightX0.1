@@ -127,7 +127,7 @@ export const createPaymentRequest = async (
   res: express.Response
 ) => {
   const { username, amount, UPItransactionID } = req.body;
-  
+
   if (!username || !amount || !UPItransactionID) {
     return res.status(400).send({
       message: "Username, amount, and UPI transaction ID are required",
@@ -138,9 +138,9 @@ export const createPaymentRequest = async (
   }
 
   try {
-
-    let walletTransactions:any = await getWalletTransactionByUsername(username);
-    console.log(walletTransactions);
+    let walletTransactions: any = await getWalletTransactionByUsername(
+      username
+    );
     const transactionsData = {
       amount,
       UPItransactionID,
@@ -151,14 +151,10 @@ export const createPaymentRequest = async (
       transactionAccepted: false,
     };
     if (!walletTransactions) {
-      console.log("here");
-      
       await createWalletTransaction({
         username,
         transactionRequests: true,
-        transactions: [
-transactionsData
-        ],
+        transactions: [transactionsData],
       });
     } else {
       walletTransactions.transactions.push(transactionsData);

@@ -2,6 +2,7 @@ import express from 'express';
 import { BidModal, createBid } from '../db/biding';
 import { FightModal } from '../db/fight';
 import { getUserTotalBalance, updateUserByUsername } from '../db/users';
+import { createWalletTransaction, getWalletTransactionByUsername } from '../db/wallet';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
     const { username,fightId,person } = req.query;
@@ -22,7 +23,6 @@ export const registerBid = async (req: express.Request, res: express.Response) =
             bidder:username,
         });
         await updateUserByUsername(username.toString(), { walletBalance: getTotalBalance - amount });
-        console.log('Bid registered',getTotalBalance,amount);
         
     }
     // const qrCode = await axios.get("https://quickchart.io/qr",{
@@ -45,6 +45,31 @@ export const registerBid = async (req: express.Request, res: express.Response) =
             fight.challenged.bids += amount;
         }
         await fight.save();
+        let walletTransactions: any = await getWalletTransactionByUsername(
+            username.toString()
+          );
+          const transactionsData = {
+            amount,
+            fightId,
+            fighterName: fighter,
+            credit: false,
+            debit: true,
+            timestamp: new Date(),
+            isMarked: true,
+            transactionAccepted: true,
+          };
+          if (!walletTransactions) {
+            await createWalletTransaction({
+              username,
+              transactionRequests: true,
+              transactions: [transactionsData],
+            });
+          } else {
+            walletTransactions.transactions.push(transactionsData);
+            walletTransactions.transactionRequests = true;
+            await walletTransactions.save();
+          }
+
         res.status(200).send({ message: 'Bid registered', updatedFight: fight }).end();
     } catch (error) {
         console.error('Error registering bid:', error);
