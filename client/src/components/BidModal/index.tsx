@@ -20,10 +20,9 @@ const BidModal = ({
   odds: string;
 }) => {
   const [bid, setBid] = useState(1);
-  const [qrCode, setQrCode] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleBidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBidChange = (e: any) => {
     setBid(parseInt(e.target.value));
   };
 
@@ -40,9 +39,7 @@ const BidModal = ({
           },
         }
       );
-      setQrCode(response.data.qrCode);
-      console.log("Bid registered", response.data);
-      // onRequestClose();
+      onRequestClose();
     } catch (err:any) {
       toast.error(err?.response?.data?.message || "An error occurred", {
         position: "top-center",
@@ -57,9 +54,6 @@ const BidModal = ({
       console.error(err);
     }
   };
-  const paymentMade = async () => {
-    
-  }
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose}>

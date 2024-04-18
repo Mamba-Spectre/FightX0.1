@@ -91,8 +91,6 @@ const HomePage = () => {
       );
       const data = walletBalance.data.user.walletBalance;
       setUserData({ username, profilePicture, walletBalance: data });
-      console.log("wallet", userData.walletBalance);
-      // setUserData({ username, profilePicture });
     }
   };
 
@@ -271,7 +269,7 @@ const HomePage = () => {
               {fightDetailsModal && (
                 <FightDetails
                   modalOpen={fightDetailsModal}
-                  closeModal={() => setFightDetailsModal(false)}
+                  closeModal={() => {setFightDetailsModal(false),getUserData()}}
                   fightID={fightID}
                 />
               )}
@@ -284,7 +282,7 @@ const HomePage = () => {
               {walletModal && (
                 <WalletModal
                   modalOpen={walletModal}
-                  closeModal={() => setWalletModal(false)}
+                  closeModal={() => {getUserData(), setWalletModal(false)}}
                 />
               )}
             </div>

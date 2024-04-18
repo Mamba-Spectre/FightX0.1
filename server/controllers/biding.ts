@@ -5,7 +5,7 @@ import { getUserTotalBalance, updateUserByUsername } from '../db/users';
 import { createWalletTransaction, getWalletTransactionByUsername } from '../db/wallet';
 
 export const registerBid = async (req: express.Request, res: express.Response) => {
-    const { username,fightId,person } = req.query;
+    const { username,fightId } = req.query;
     const { fighter, amount } = req.body;
     if (!fighter || !amount || !username) {
         return res.status(400).send({ message: 'Missing required fields' });
@@ -25,14 +25,6 @@ export const registerBid = async (req: express.Request, res: express.Response) =
         await updateUserByUsername(username.toString(), { walletBalance: getTotalBalance - amount });
         
     }
-    // const qrCode = await axios.get("https://quickchart.io/qr",{
-    //     params:{
-    //         text: `upi://pay?pa=9996565776@paytm&pn=PaytmUser&mc=0000&mode=02&purpose=00&orgid=159761&cust=1170693112&am=${amount}`,
-    //         format: 'base64',
-    //     }
-    // })
-    // res.status(200).send({ message: 'Bid registeration requested!', qrCode: qrCode.data }).end();
-
     try {
         const fight:any = await FightModal.findById(fightId);
         if (!fight) {
