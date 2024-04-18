@@ -127,21 +127,23 @@ export const createPaymentRequest = async (
   res: express.Response
 ) => {
   const { username, amount, UPItransactionID } = req.body;
+  
   if (!username || !amount || !UPItransactionID) {
-    return res
-      .status(400)
-      .send({
-        message: "Username, amount and UPI transaction ID are required",
-      });
+    return res.status(400).send({
+      message: "Username, amount, and UPI transaction ID are required",
+    });
   }
+
   try {
     if (amount < 0) {
       return res.status(400).send({ message: "Amount cannot be negative" });
     }
-    const walletTransaction: any = await getWalletTransactionByUsername(
-      username
-    );
-    if (!walletTransaction) {
+
+    let walletTransaction:any = await getWalletTransactionByUsername(username);
+    console.log(walletTransaction);
+    if (walletTransaction.length === 0) {
+      console.log("here");
+      
       await createWalletTransaction({
         username,
         transactionRequests: true,
@@ -158,7 +160,11 @@ export const createPaymentRequest = async (
         ],
       });
     } else {
-      walletTransaction.transactions.push({
+      // Ensure walletTransaction is a Mongoose document
+      // walletTransaction = Array.isArray(walletTransaction) ? walletTransaction[0] : walletTransaction;
+
+      // Push new transaction to existing wallet transaction
+      walletTransaction[0].transactions.push({
         amount,
         UPItransactionID,
         credit: false,
@@ -167,8 +173,12 @@ export const createPaymentRequest = async (
         isMarked: false,
         transactionAccepted: false,
       });
-      await walletTransaction.save();
+
+      // Save the updated wallet transaction
+      await walletTransaction[0].save();
     }
+
+    res.status(200).send({ message: "Payment request created successfully" });
   } catch (error) {
     console.error("Error creating payment request:", error);
     res.status(500).send({ message: "Internal server error" });
