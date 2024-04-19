@@ -85,22 +85,3 @@ export const getFightDetails = async (req: express.Request, res: express.Respons
     }
     res.status(200).send({ fight }).end();
 }
-
-// export const mockFIghts = async () => {
-// const mockData = [{
-//     challenger:"HarshVardhanSaroha",
-//     challenged:"SaranshBibiyan",
-//     date:"2024-05-01T00:00:00.000Z",
-//     location:"Leisure Valley, Delhi Road Sonipat, Haryana",
-// },{
-//     challenger:"YashDahiya",
-//     challenged:"ViditRaheja",
-//     date:"2024-05-08T00:00:00.000Z",
-//     location:"Haryana Sports Ground, Sonipat, Haryana",
-// }];
-
-// for (const data of mockData) {
-//   await FightModal.create(data);
-// }
-
-// console.log('Mock data inserted successfully.');}
