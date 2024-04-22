@@ -48,7 +48,6 @@ const RequestsModal = ({
       });
       fetchRequests();
     } catch (err) {
-      console.log(err);
     }
   };
   const rejectFight = async (fightRequestId: string) => {
