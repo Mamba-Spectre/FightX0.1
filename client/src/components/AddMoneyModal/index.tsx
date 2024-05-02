@@ -31,7 +31,6 @@ const AddMoneyModal = ({
       );
       setQrCode(response.data.qrCode);
       setQrFields(true);
-      console.log("QR Code generated", response.data);
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "An error occurred", {
         position: "top-center",
